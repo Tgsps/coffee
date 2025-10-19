@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+const User = process.env.MONGODB_URI ? require('../models/User') : null;
+const db = require('../database');
 
 const auth = async (req, res, next) => {
   try {
@@ -10,7 +11,17 @@ const auth = async (req, res, next) => {
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret');
-    const user = await User.findById(decoded.id).select('-password');
+    let user;
+    if (User) {
+      user = await User.findById(decoded.id).select('-password');
+    } else {
+      // Memory mode: fetch user via db abstraction and strip password
+      const found = await db.getUserById(decoded.id);
+      if (found) {
+        const { password, ...rest } = found;
+        user = rest;
+      }
+    }
     
     if (!user) {
       return res.status(401).json({ message: 'Token is not valid' });

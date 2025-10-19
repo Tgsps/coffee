@@ -1,7 +1,7 @@
 const express = require('express');
 const { body, validationResult } = require('express-validator');
-const Order = require('../models/Order');
-const Product = require('../models/Product');
+const Order = process.env.MONGODB_URI ? require('../models/Order') : null;
+const Product = process.env.MONGODB_URI ? require('../models/Product') : null;
 const { auth } = require('../middleware/auth');
 
 const router = express.Router();
@@ -29,6 +29,7 @@ router.post('/', auth, [
     let itemsPrice = 0;
     const orderItemsWithPrices = [];
 
+    if (!Product || !Order) return res.status(503).json({ message: 'Orders disabled in memory mode' });
     for (const item of orderItems) {
       const product = await Product.findById(item.product);
       if (!product) {
@@ -72,6 +73,7 @@ router.post('/', auth, [
 // Get user's orders
 router.get('/myorders', auth, async (req, res) => {
   try {
+    if (!Order) return res.status(503).json({ message: 'Orders disabled in memory mode' });
     const orders = await Order.find({ user: req.user._id })
       .populate('orderItems.product', 'name image price')
       .sort({ createdAt: -1 });
@@ -86,6 +88,7 @@ router.get('/myorders', auth, async (req, res) => {
 // Get single order
 router.get('/:id', auth, async (req, res) => {
   try {
+    if (!Order) return res.status(503).json({ message: 'Orders disabled in memory mode' });
     const order = await Order.findById(req.params.id)
       .populate('orderItems.product', 'name image price')
       .populate('user', 'name email');
@@ -109,6 +112,7 @@ router.get('/:id', auth, async (req, res) => {
 // Update order to paid
 router.put('/:id/pay', auth, async (req, res) => {
   try {
+    if (!Order) return res.status(503).json({ message: 'Orders disabled in memory mode' });
     const order = await Order.findById(req.params.id);
 
     if (!order) {
@@ -140,6 +144,7 @@ router.get('/', auth, async (req, res) => {
       return res.status(403).json({ message: 'Access denied. Admin role required.' });
     }
 
+    if (!Order) return res.status(503).json({ message: 'Orders disabled in memory mode' });
     const orders = await Order.find()
       .populate('orderItems.product', 'name image price')
       .populate('user', 'name email')

@@ -1,5 +1,4 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const path = require('path');
@@ -27,15 +26,19 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/products', require('./routes/products'));
 app.use('/api/orders', require('./routes/orders'));
 
-// MongoDB connection (optional). If no URI provided, run in memory mode
-const mongoUri = process.env.MONGODB_URI;
-if (mongoUri) {
-  mongoose.connect(mongoUri)
-    .then(() => console.log('MongoDB connected successfully'))
-    .catch(err => console.error('MongoDB connection error:', err));
-} else {
-  console.log('Running in memory mode (no MONGODB_URI provided)');
-}
+// Database connection
+const db = require('./database');
+
+// Initialize database connection
+db.connect().then(async (connected) => {
+  if (connected) {
+    // Seed database with sample data
+    await db.seedData();
+  } else {
+    // Use in-memory storage with sample data
+    await db.seedData();
+  }
+});
 
 // Basic route
 app.get('/', (req, res) => {

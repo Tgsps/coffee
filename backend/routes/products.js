@@ -1,7 +1,6 @@
 const express = require('express');
 const { body, validationResult } = require('express-validator');
-const Product = require('../models/Product');
-const { store } = require('../data/memory');
+const db = require('../database');
 const { auth, adminAuth } = require('../middleware/auth');
 
 const router = express.Router();
@@ -10,54 +9,34 @@ const router = express.Router();
 router.get('/', async (req, res) => {
   try {
     const { category, featured, search, page = 1, limit = 10 } = req.query;
-    const useMemory = !process.env.MONGODB_URI;
-
-    if (useMemory) {
-      let products = [...store.products];
-      if (category) products = products.filter(p => p.category === category);
-      if (featured === 'true') products = products.filter(p => p.featured);
-      if (search) {
-        const s = String(search).toLowerCase();
-        products = products.filter(p =>
-          p.name.toLowerCase().includes(s) ||
-          p.description.toLowerCase().includes(s)
-        );
-      }
-
-      const pageNum = Number(page) || 1;
-      const limitNum = Number(limit) || 10;
-      const total = products.length;
-      const start = (pageNum - 1) * limitNum;
-      const end = start + limitNum;
-      const slice = products.slice(start, end);
-
-      return res.json({
-        products: slice,
-        totalPages: Math.ceil(total / limitNum),
-        currentPage: pageNum,
-        total
-      });
-    }
-
-    // MongoDB mode
-    const query = {};
-    if (category) query.category = category;
-    if (featured === 'true') query.featured = true;
+    
+    let products = await db.getProducts();
+    
+    // Apply filters
+    if (category) products = products.filter(p => p.category === category);
+    if (featured === 'true') products = products.filter(p => p.featured);
     if (search) {
-      query.$or = [
-        { name: { $regex: search, $options: 'i' } },
-        { description: { $regex: search, $options: 'i' } }
-      ];
+      const s = String(search).toLowerCase();
+      products = products.filter(p =>
+        p.name.toLowerCase().includes(s) ||
+        p.description.toLowerCase().includes(s)
+      );
     }
 
-    const products = await Product.find(query)
-      .limit(limit * 1)
-      .skip((page - 1) * limit)
-      .sort({ createdAt: -1 });
+    // Pagination
+    const pageNum = Number(page) || 1;
+    const limitNum = Number(limit) || 10;
+    const total = products.length;
+    const start = (pageNum - 1) * limitNum;
+    const end = start + limitNum;
+    const slice = products.slice(start, end);
 
-    const total = await Product.countDocuments(query);
-
-    res.json({ products, totalPages: Math.ceil(total / limit), currentPage: page, total });
+    res.json({
+      products: slice,
+      totalPages: Math.ceil(total / limitNum),
+      currentPage: pageNum,
+      total
+    });
   } catch (error) {
     console.error('Get products error:', error);
     res.status(500).json({ message: 'Server error' });
@@ -67,14 +46,7 @@ router.get('/', async (req, res) => {
 // Get single product
 router.get('/:id', async (req, res) => {
   try {
-    const useMemory = !process.env.MONGODB_URI;
-    if (useMemory) {
-      const product = store.products.find(p => p._id === req.params.id);
-      if (!product) return res.status(404).json({ message: 'Product not found' });
-      return res.json(product);
-    }
-
-    const product = await Product.findById(req.params.id);
+    const product = await db.getProductById(req.params.id);
     
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
@@ -101,15 +73,7 @@ router.post('/', adminAuth, [
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const useMemory = !process.env.MONGODB_URI;
-    if (useMemory) {
-      const newItem = { _id: `mem-${Date.now()}`, reviews: [], ...req.body };
-      store.products.unshift(newItem);
-      return res.status(201).json(newItem);
-    }
-
-    const product = new Product(req.body);
-    await product.save();
+    const product = await db.createProduct(req.body);
     res.status(201).json(product);
   } catch (error) {
     console.error('Create product error:', error);
@@ -129,15 +93,8 @@ router.put('/:id', adminAuth, [
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    const useMemory = !process.env.MONGODB_URI;
-    if (useMemory) {
-      const idx = store.products.findIndex(p => p._id === req.params.id);
-      if (idx === -1) return res.status(404).json({ message: 'Product not found' });
-      store.products[idx] = { ...store.products[idx], ...req.body };
-      return res.json(store.products[idx]);
-    }
 
-    const product = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+    const product = await db.updateProduct(req.params.id, req.body);
     if (!product) return res.status(404).json({ message: 'Product not found' });
     res.json(product);
   } catch (error) {
@@ -149,15 +106,7 @@ router.put('/:id', adminAuth, [
 // Delete product (Admin only)
 router.delete('/:id', adminAuth, async (req, res) => {
   try {
-    const useMemory = !process.env.MONGODB_URI;
-    if (useMemory) {
-      const prevLen = store.products.length;
-      store.products = store.products.filter(p => p._id !== req.params.id);
-      if (store.products.length === prevLen) return res.status(404).json({ message: 'Product not found' });
-      return res.json({ message: 'Product deleted successfully' });
-    }
-
-    const product = await Product.findByIdAndDelete(req.params.id);
+    const product = await db.deleteProduct(req.params.id);
     if (!product) return res.status(404).json({ message: 'Product not found' });
     res.json({ message: 'Product deleted successfully' });
   } catch (error) {
@@ -177,26 +126,27 @@ router.post('/:id/reviews', auth, [
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const useMemory = !process.env.MONGODB_URI;
     const { rating, comment } = req.body;
-
-    if (useMemory) {
-      const product = store.products.find(p => p._id === req.params.id);
-      if (!product) return res.status(404).json({ message: 'Product not found' });
-      product.reviews = product.reviews || [];
-      product.reviews.push({ rating, comment, createdAt: new Date() });
-      const totalRating = product.reviews.reduce((sum, r) => sum + r.rating, 0);
-      product.rating = totalRating / product.reviews.length;
-      return res.status(201).json({ message: 'Review added successfully' });
-    }
-
-    const product = await Product.findById(req.params.id);
+    const product = await db.getProductById(req.params.id);
+    
     if (!product) return res.status(404).json({ message: 'Product not found' });
-    const review = { user: req.user._id, rating, comment };
-    product.reviews.push(review);
-    const totalRating = product.reviews.reduce((sum, review) => sum + review.rating, 0);
+    
+    // Add review
+    product.reviews = product.reviews || [];
+    product.reviews.push({ 
+      user: req.user._id, 
+      rating, 
+      comment, 
+      createdAt: new Date() 
+    });
+    
+    // Update rating
+    const totalRating = product.reviews.reduce((sum, r) => sum + r.rating, 0);
     product.rating = totalRating / product.reviews.length;
-    await product.save();
+    
+    // Save updated product
+    await db.updateProduct(req.params.id, product);
+    
     res.status(201).json({ message: 'Review added successfully' });
   } catch (error) {
     console.error('Add review error:', error);

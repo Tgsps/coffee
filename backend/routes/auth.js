@@ -1,7 +1,9 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
-const User = require('../models/User');
+const User = process.env.MONGODB_URI ? require('../models/User') : null;
+const db = require('../database');
+const bcrypt = require('bcryptjs');
 const { auth } = require('../middleware/auth');
 
 const router = express.Router();
@@ -20,25 +22,29 @@ router.post('/register', [
 
     const { name, email, password, phone } = req.body;
 
-    // Check if user already exists
-    const existingUser = await User.findOne({ email });
+    // Check if user already exists (supports MongoDB and memory via db abstraction)
+    const existingUser = await db.getUserByEmail(email);
     if (existingUser) {
       return res.status(400).json({ message: 'User already exists' });
     }
 
-    // Create new user
-    const user = new User({
+    // Create new user (hash password in both modes)
+    let hashedPassword = password;
+    if (!User) {
+      const salt = await bcrypt.genSalt(10);
+      hashedPassword = await bcrypt.hash(password, salt);
+    }
+
+    const createdUser = await db.createUser({
       name,
       email,
-      password,
+      password: hashedPassword,
       phone
     });
 
-    await user.save();
-
     // Generate JWT token
     const token = jwt.sign(
-      { id: user._id },
+      { id: createdUser._id },
       process.env.JWT_SECRET || 'fallback-secret',
       { expiresIn: '7d' }
     );
@@ -46,10 +52,10 @@ router.post('/register', [
     res.status(201).json({
       token,
       user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role
+        id: createdUser._id,
+        name: createdUser.name,
+        email: createdUser.email,
+        role: createdUser.role || 'user'
       }
     });
   } catch (error) {
@@ -71,14 +77,19 @@ router.post('/login', [
 
     const { email, password } = req.body;
 
-    // Check if user exists
-    const user = await User.findOne({ email });
+    // Check if user exists (supports MongoDB and memory)
+    const user = await db.getUserByEmail(email);
     if (!user) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
-    // Check password
-    const isMatch = await user.comparePassword(password);
+    // Check password in both modes
+    let isMatch = false;
+    if (User && typeof user.comparePassword === 'function') {
+      isMatch = await user.comparePassword(password);
+    } else {
+      isMatch = await bcrypt.compare(password, user.password);
+    }
     if (!isMatch) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
@@ -96,7 +107,7 @@ router.post('/login', [
         id: user._id,
         name: user.name,
         email: user.email,
-        role: user.role
+        role: user.role || 'user'
       }
     });
   } catch (error) {
