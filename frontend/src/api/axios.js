@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? '/.netlify/functions/api' // Use Netlify functions for production
+  ? 'https://coffee-backend-3d16.onrender.com' // Use your deployed backend
   : 'http://localhost:5000';
 
 const api = axios.create({
