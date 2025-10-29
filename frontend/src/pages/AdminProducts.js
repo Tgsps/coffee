@@ -38,11 +38,20 @@ const AdminProducts = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      // Coerce numeric/boolean fields to correct types
+      const payload = {
+        ...formData,
+        price: typeof formData.price === 'string' ? parseFloat(formData.price) : formData.price,
+        stockQuantity: typeof formData.stockQuantity === 'string' ? parseInt(formData.stockQuantity) : formData.stockQuantity,
+        inStock: Boolean(formData.inStock),
+        featured: Boolean(formData.featured)
+      };
+
       if (editingProduct) {
-        await api.put(`/api/products/${editingProduct._id}`, formData);
+        await api.put(`/api/products/${editingProduct._id}`, payload);
         toast.success('Product updated successfully');
       } else {
-        await api.post('/api/products', formData);
+        await api.post('/api/products', payload);
         toast.success('Product created successfully');
       }
       setShowModal(false);
