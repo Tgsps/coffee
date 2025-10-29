@@ -228,6 +228,35 @@ const db = {
     return null;
   },
 
+  // Ensure an admin user exists with given email and password
+  async ensureAdminUser({ email, password, name = 'Admin' }) {
+    if (!email || !password) return null;
+
+    // Try to find existing
+    const existing = await this.getUserByEmail(email);
+
+    // If not exists, create fresh admin
+    if (!existing) {
+      return await this.createUser({ name, email, password, role: 'admin' });
+    }
+
+    // If exists, ensure role is admin and update password
+    let hashedPassword = password;
+    const isBcryptHash = typeof hashedPassword === 'string' && hashedPassword.startsWith('$2') && hashedPassword.length >= 59;
+    if (!isBcryptHash) {
+      const salt = await bcrypt.genSalt(10);
+      hashedPassword = await bcrypt.hash(password, salt);
+    }
+
+    if (User) {
+      // Use findByIdAndUpdate to set role; set password separately to ensure hashing (we pre-hashed)
+      return await this.updateUser(existing._id, { role: 'admin', password: hashedPassword });
+    }
+
+    // Memory mode
+    return await this.updateUser(existing._id, { role: 'admin', password: hashedPassword });
+  },
+
   // Get orders
   async getOrders() {
     if (Order) {

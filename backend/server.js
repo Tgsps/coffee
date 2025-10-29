@@ -39,6 +39,18 @@ db.connect().then(async (connected) => {
     // Use in-memory storage with sample data
     await db.seedData();
   }
+
+  // Ensure default admin user exists
+  try {
+    await db.ensureAdminUser({
+      email: 'tamimghassan@gmail.com',
+      password: '1234567890',
+      name: 'Admin'
+    });
+    console.log('✅ Ensured default admin user exists');
+  } catch (e) {
+    console.error('⚠️ Failed to ensure default admin user:', e?.message || e);
+  }
 });
 
 // Basic route
