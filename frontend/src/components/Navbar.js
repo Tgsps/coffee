@@ -93,6 +93,15 @@ const Navbar = () => {
                     >
                       My Orders
                     </Link>
+                    {user?.role === 'admin' && (
+                      <Link
+                        to="/admin"
+                        className="block px-4 py-2 text-sm text-coffee-700 hover:bg-beige-100"
+                        onClick={() => setIsProfileOpen(false)}
+                      >
+                        Admin Dashboard
+                      </Link>
+                    )}
                     <button
                       onClick={handleLogout}
                       className="block w-full text-left px-4 py-2 text-sm text-coffee-700 hover:bg-beige-100"

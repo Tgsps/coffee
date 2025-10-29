@@ -215,6 +215,19 @@ const db = {
     return user;
   },
 
+  // Update user
+  async updateUser(id, updateData) {
+    if (User) {
+      return await User.findByIdAndUpdate(id, updateData, { new: true });
+    }
+    const index = memoryStore.users.findIndex(u => u._id === id);
+    if (index !== -1) {
+      memoryStore.users[index] = { ...memoryStore.users[index], ...updateData };
+      return memoryStore.users[index];
+    }
+    return null;
+  },
+
   // Get orders
   async getOrders() {
     if (Order) {

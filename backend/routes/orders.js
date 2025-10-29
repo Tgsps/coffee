@@ -85,6 +85,26 @@ router.get('/myorders', auth, async (req, res) => {
   }
 });
 
+// Get all orders (Admin only) - Must be before /:id route
+router.get('/', auth, async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Access denied. Admin role required.' });
+    }
+
+    if (!Order) return res.status(503).json({ message: 'Orders disabled in memory mode' });
+    const orders = await Order.find()
+      .populate('orderItems.product', 'name image price')
+      .populate('user', 'name email')
+      .sort({ createdAt: -1 });
+
+    res.json(orders);
+  } catch (error) {
+    console.error('Get all orders error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // Get single order
 router.get('/:id', auth, async (req, res) => {
   try {
@@ -133,26 +153,6 @@ router.put('/:id/pay', auth, async (req, res) => {
     res.json(order);
   } catch (error) {
     console.error('Update order payment error:', error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
-// Get all orders (Admin only)
-router.get('/', auth, async (req, res) => {
-  try {
-    if (req.user.role !== 'admin') {
-      return res.status(403).json({ message: 'Access denied. Admin role required.' });
-    }
-
-    if (!Order) return res.status(503).json({ message: 'Orders disabled in memory mode' });
-    const orders = await Order.find()
-      .populate('orderItems.product', 'name image price')
-      .populate('user', 'name email')
-      .sort({ createdAt: -1 });
-
-    res.json(orders);
-  } catch (error) {
-    console.error('Get all orders error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });
