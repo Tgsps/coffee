@@ -284,6 +284,19 @@ const db = {
     return order;
   },
 
+  // Update order
+  async updateOrder(id, updateData) {
+    if (Order) {
+      return await Order.findByIdAndUpdate(id, updateData, { new: true });
+    }
+    const index = memoryStore.orders.findIndex(o => o._id === id);
+    if (index !== -1) {
+      memoryStore.orders[index] = { ...memoryStore.orders[index], ...updateData };
+      return memoryStore.orders[index];
+    }
+    return null;
+  },
+
   // Seed sample data
   async seedData() {
     const sampleProducts = [
