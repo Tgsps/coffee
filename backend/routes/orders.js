@@ -101,7 +101,19 @@ router.get('/myorders', auth, async (req, res) => {
       return res.json(orders);
     }
     const orders = await db.getOrdersByUser(req.user._id);
-    return res.json(orders.sort((a, b) => new Date(b.createdAt||0) - new Date(a.createdAt||0)));
+    const enriched = await Promise.all(
+      orders.map(async (o) => {
+        const orderItems = (o.orderItems || o.items || []).map((it) => ({ ...it }));
+        for (const it of orderItems) {
+          const productObj = await db.getProductById(it.product);
+          it.productDetails = productObj
+            ? { name: productObj.name, image: productObj.image, price: productObj.price }
+            : null;
+        }
+        return { ...o, orderItems };
+      })
+    );
+    return res.json(enriched.sort((a, b) => new Date(b.createdAt||0) - new Date(a.createdAt||0)));
   } catch (error) {
     console.error('Get orders error:', error);
     res.status(500).json({ message: 'Server error' });
@@ -123,7 +135,19 @@ router.get('/', auth, async (req, res) => {
       return res.json(orders);
     }
     const orders = await db.getOrders();
-    return res.json(orders.sort((a, b) => new Date(b.createdAt||0) - new Date(a.createdAt||0)));
+    const enriched = await Promise.all(
+      orders.map(async (o) => {
+        const orderItems = (o.orderItems || o.items || []).map((it) => ({ ...it }));
+        for (const it of orderItems) {
+          const productObj = await db.getProductById(it.product);
+          it.productDetails = productObj
+            ? { name: productObj.name, image: productObj.image, price: productObj.price }
+            : null;
+        }
+        return { ...o, orderItems };
+      })
+    );
+    return res.json(enriched.sort((a, b) => new Date(b.createdAt||0) - new Date(a.createdAt||0)));
   } catch (error) {
     console.error('Get all orders error:', error);
     res.status(500).json({ message: 'Server error' });
@@ -160,7 +184,14 @@ router.get('/:id', auth, async (req, res) => {
       return res.status(403).json({ message: 'Access denied' });
     }
 
-    return res.json(order);
+    const orderItems = (order.orderItems || order.items || []).map((it) => ({ ...it }));
+    for (const it of orderItems) {
+      const productObj = await db.getProductById(it.product);
+      it.productDetails = productObj
+        ? { name: productObj.name, image: productObj.image, price: productObj.price }
+        : null;
+    }
+    return res.json({ ...order, orderItems });
   } catch (error) {
     console.error('Get order error:', error);
     res.status(500).json({ message: 'Server error' });
