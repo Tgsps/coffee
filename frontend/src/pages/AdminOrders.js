@@ -69,10 +69,16 @@ const AdminOrders = () => {
                     Customer
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Phone
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Items
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Total
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Address
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Payment
@@ -95,23 +101,31 @@ const AdminOrders = () => {
                       {order._id.slice(-8)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{order.user?.name || 'N/A'}</div>
+                      <div className="text-sm text-gray-900">{order.user?.name || order.shippingAddress?.name || 'N/A'}</div>
                       <div className="text-sm text-gray-500">{order.user?.email || ''}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {order.user?.phone || '—'}
                     </td>
                     <td className="px-6 py-4">
                       <div className="text-sm text-gray-900">
-                        {order.orderItems?.length || 0} item(s)
+                        {order.orderItems?.length || order.items?.length || 0} item(s)
                       </div>
                       <div className="text-xs text-gray-500">
-                        {order.orderItems
-                          ?.slice(0, 2)
-                          .map((item) => item.product?.name || 'N/A')
+                        {(order.orderItems || order.items || [])
+                          .slice(0, 2)
+                          .map((item) => (item.product?.name || item.productDetails?.name || 'N/A'))
                           .join(', ')}
-                        {order.orderItems?.length > 2 && '...'}
+                        {(order.orderItems?.length || order.items?.length || 0) > 2 && '...'}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       ${order.totalPrice?.toFixed(2) || '0.00'}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 max-w-xs truncate">
+                      {[order.shippingAddress?.street, order.shippingAddress?.city, order.shippingAddress?.state, order.shippingAddress?.zipCode, order.shippingAddress?.country]
+                        .filter(Boolean)
+                        .join(', ')}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span
