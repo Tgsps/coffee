@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import api from '../api/axios';
 import { useCart } from '../context/CartContext';
 
@@ -28,93 +29,100 @@ const Home = () => {
   };
 
   return (
-    <div className="min-h-screen">
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-coffee-800 to-coffee-600 text-white">
-        <div className="absolute inset-0 bg-black opacity-20"></div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-          <div className="text-center">
-            <h1 className="text-4xl md:text-6xl font-serif font-bold mb-6">
-              Premium Coffee Experience
-            </h1>
-            <p className="text-xl md:text-2xl mb-8 text-beige-200 max-w-3xl mx-auto">
-              Discover the finest coffee beans from around the world, carefully selected and roasted to perfection
-            </p>
-            <div className="space-x-4">
-              <Link
-                to="/products"
-                className="inline-block bg-gold-500 hover:bg-gold-600 text-coffee-800 font-bold py-3 px-8 rounded-lg text-lg transition-colors"
+    <div className="min-h-screen bg-beige-50">
+      {/* Hero Section - full-bleed image with subtle parallax and soft overlay */}
+      <section className="relative">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: 'easeOut' }}
+          className="relative h-[70vh] md:h-[80vh] w-full overflow-hidden"
+        >
+          <motion.img
+            src="https://images.unsplash.com/photo-1517705008128-361805f42e86?q=80&w=1920&auto=format&fit=crop"
+            alt="Craft coffee in warm light"
+            className="absolute inset-0 w-full h-full object-cover"
+            initial={{ scale: 1.08 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 2, ease: 'easeOut' }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/25 to-black/10" />
+
+          <div className="relative h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-end pb-14">
+            <div className="text-left">
+              <motion.h1
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, ease: 'easeOut', delay: 0.2 }}
+                className="text-4xl md:text-6xl font-serif font-bold tracking-tight text-white drop-shadow-sm"
               >
-                Shop Now
-              </Link>
-              <Link
-                to="/about"
-                className="inline-block border-2 border-white text-white hover:bg-white hover:text-coffee-800 font-bold py-3 px-8 rounded-lg text-lg transition-colors"
+                Modern Coffee Atelier
+              </motion.h1>
+              <motion.p
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, ease: 'easeOut', delay: 0.35 }}
+                className="mt-4 text-lg md:text-2xl text-white/80 max-w-2xl"
               >
-                Learn More
+                Single-origin lots and signature blends, roasted with intention.
+              </motion.p>
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, ease: 'easeOut', delay: 0.5 }}
+                className="mt-8 flex items-center gap-4"
+              >
+                <Link
+                  to="/products"
+                  className="inline-block rounded-xl bg-white text-black px-6 py-3 text-base font-semibold tracking-wide hover:bg-white/90 transition-colors"
+                >
+                  Explore Our Coffee
+                </Link>
+                <Link
+                  to="/about"
+                  className="inline-block rounded-xl border border-white/60 text-white px-6 py-3 text-base font-semibold tracking-wide hover:bg-white/10 transition-colors"
+                >
+                  Our Philosophy
+                </Link>
+              </motion.div>
+            </div>
+          </div>
+        </motion.div>
+      </section>
+
+      {/* About / Philosophy - editorial block with image */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-12 gap-10 items-center">
+          <div className="md:col-span-5">
+            <div className="relative aspect-[4/5] overflow-hidden rounded-3xl shadow-xl">
+              <img
+                src="https://images.unsplash.com/photo-1517256064527-09c73fc73e38?q=80&w=1200&auto=format&fit=crop"
+                alt="Roasting craft"
+                className="w-full h-full object-cover"
+              />
+            </div>
+          </div>
+          <div className="md:col-span-7">
+            <div className="max-w-xl">
+              <h2 className="text-3xl md:text-5xl font-serif font-bold tracking-tight text-beige-900">Our Philosophy</h2>
+              <p className="mt-6 text-beige-600 leading-relaxed">
+                We approach coffee as artisans—sourcing responsibly, roasting with intention, and
+                honoring the unique character of each origin. The result is a refined cup that
+                balances clarity, sweetness, and texture.
+              </p>
+              <Link to="/about" className="mt-8 inline-block text-beige-900 underline underline-offset-4 decoration-beige-400 hover:decoration-beige-900 transition-colors">
+                Learn more about our craft
               </Link>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-16 bg-white">
+      {/* Featured Products - refined grid with micro animations */}
+      <section className="py-20 bg-beige-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-serif font-bold text-coffee-800 mb-4">
-              Why Choose Our Coffee?
-            </h2>
-            <p className="text-lg text-beige-600 max-w-2xl mx-auto">
-              We're committed to delivering exceptional quality and service
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold text-coffee-800 mb-2">Premium Quality</h3>
-              <p className="text-beige-600">
-                Hand-picked beans from the world's finest coffee regions
-              </p>
-            </div>
-            
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold text-coffee-800 mb-2">Fresh Roasted</h3>
-              <p className="text-beige-600">
-                Roasted to order for maximum freshness and flavor
-              </p>
-            </div>
-            
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-gold-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold text-coffee-800 mb-2">Fast Delivery</h3>
-              <p className="text-beige-600">
-                Quick and secure shipping to your doorstep
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Featured Products Section */}
-      <section className="py-16 bg-beige-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-serif font-bold text-coffee-800 mb-4">
+            <h2 className="text-3xl md:text-5xl font-serif font-bold text-beige-900 mb-4">
               Featured Products
             </h2>
             <p className="text-lg text-beige-600 max-w-2xl mx-auto">
@@ -127,59 +135,77 @@ const Home = () => {
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-coffee-700"></div>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {featuredProducts.map((product) => (
-                <div key={product._id} className="card p-6">
-                  <div className="aspect-w-1 aspect-h-1 mb-4">
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="w-full h-48 object-cover rounded-lg"
-                    />
-                  </div>
-                  <h3 className="text-xl font-semibold text-coffee-800 mb-2">
-                    {product.name}
-                  </h3>
-                  <p className="text-beige-600 mb-4 line-clamp-2">
-                    {product.description}
-                  </p>
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="text-2xl font-bold text-gold-600">
-                      ${product.price}
-                    </span>
-                    <div className="flex items-center">
-                      <div className="flex text-gold-400">
-                        {[...Array(5)].map((_, i) => (
-                          <svg
-                            key={i}
-                            className={`w-4 h-4 ${i < Math.floor(product.rating) ? 'text-gold-400' : 'text-beige-300'}`}
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                          >
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                          </svg>
-                        ))}
-                      </div>
-                      <span className="ml-2 text-sm text-beige-600">
-                        ({product.reviews?.length || 0})
-                      </span>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => handleAddToCart(product)}
-                    className="w-full btn-primary"
+            <AnimatePresence>
+              <motion.div
+                layout
+                className="grid grid-cols-1 md:grid-cols-3 gap-8"
+              >
+                {featuredProducts.map((product, idx) => (
+                  <motion.div
+                    key={product._id}
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 16 }}
+                    transition={{ duration: 0.5, ease: 'easeOut', delay: 0.05 * idx }}
+                    whileHover={{ y: -4 }}
+                    className="rounded-2xl overflow-hidden bg-white shadow-[0_10px_40px_-15px_rgba(0,0,0,0.25)] hover:shadow-[0_20px_60px_-20px_rgba(0,0,0,0.35)] transition-all"
                   >
-                    Add to Cart
-                  </button>
-                </div>
-              ))}
-            </div>
+                    <Link to={`/products/${product._id}`}>
+                      <div className="relative aspect-[4/3]">
+                        <img
+                          src={product.image}
+                          alt={product.name}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/15 to-transparent" />
+                      </div>
+                    </Link>
+                    <div className="p-6">
+                      <Link to={`/products/${product._id}`}>
+                        <h3 className="text-xl font-serif font-semibold text-beige-900 tracking-tight hover:text-coffee-700 transition-colors">
+                          {product.name}
+                        </h3>
+                      </Link>
+                      <p className="mt-2 text-beige-600 line-clamp-2">
+                        {product.description}
+                      </p>
+                      <div className="mt-5 flex items-center justify-between">
+                        <span className="text-2xl font-bold text-coffee-800">${product.price}</span>
+                        <div className="flex items-center">
+                          <div className="flex text-gold-500">
+                            {[...Array(5)].map((_, i) => (
+                              <svg
+                                key={i}
+                                className={`w-4 h-4 ${i < Math.floor(product.rating) ? 'text-gold-500' : 'text-beige-300'}`}
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                              >
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                              </svg>
+                            ))}
+                          </div>
+                          <span className="ml-2 text-sm text-beige-600">
+                            ({product.reviews?.length || 0})
+                          </span>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => handleAddToCart(product)}
+                        className="mt-5 w-full rounded-xl bg-black text-white py-3 font-semibold tracking-wide hover:bg-neutral-900 transition-colors"
+                      >
+                        Add to Cart
+                      </button>
+                    </div>
+                  </motion.div>
+                ))}
+              </motion.div>
+            </AnimatePresence>
           )}
 
           <div className="text-center mt-12">
             <Link
               to="/products"
-              className="btn-outline"
+              className="inline-block rounded-xl border border-beige-300 text-beige-900 hover:bg-beige-100 px-6 py-3 transition-colors"
             >
               View All Products
             </Link>
@@ -187,22 +213,47 @@ const Home = () => {
         </div>
       </section>
 
+      {/* Sustainability / Craft - mixed photography and copy */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-12 gap-10 items-center">
+          <div className="md:col-span-7 order-2 md:order-1">
+            <div className="max-w-xl">
+              <h2 className="text-3xl md:text-5xl font-serif font-bold tracking-tight text-beige-900">Sourcing with Integrity</h2>
+              <p className="mt-6 text-beige-600 leading-relaxed">
+                We partner directly with producers and pay quality premiums to ensure
+                sustainability across the supply chain. Transparency and craft guide every decision.
+              </p>
+              <div className="mt-8 h-px w-24 bg-beige-300" />
+            </div>
+          </div>
+          <div className="md:col-span-5 order-1 md:order-2">
+            <div className="relative aspect-[4/5] overflow-hidden rounded-3xl shadow-xl">
+              <img
+                src="https://images.unsplash.com/photo-1502325966718-85a90488dc29?q=80&w=1200&auto=format&fit=crop"
+                alt="Sourcing at origin"
+                className="w-full h-full object-cover"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Newsletter Section */}
-      <section className="py-16 bg-coffee-800 text-white">
+      <section className="py-16 bg-black text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl md:text-4xl font-serif font-bold mb-4">
             Stay Updated
           </h2>
-          <p className="text-xl text-beige-200 mb-8">
+          <p className="text-xl text-white/80 mb-8">
             Subscribe to our newsletter for the latest coffee news and exclusive offers
           </p>
           <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
             <input
               type="email"
               placeholder="Enter your email"
-              className="flex-1 px-4 py-3 rounded-lg text-coffee-800 focus:outline-none focus:ring-2 focus:ring-gold-500"
+              className="flex-1 px-4 py-3 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-white/40"
             />
-            <button className="bg-gold-500 hover:bg-gold-600 text-coffee-800 font-bold py-3 px-6 rounded-lg transition-colors">
+            <button className="bg-white hover:bg-white/90 text-black font-semibold py-3 px-6 rounded-lg transition-colors">
               Subscribe
             </button>
           </div>
