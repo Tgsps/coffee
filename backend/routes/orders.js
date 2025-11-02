@@ -2,6 +2,7 @@ const express = require('express');
 const { body, validationResult } = require('express-validator');
 const Order = process.env.MONGODB_URI ? require('../models/Order') : null;
 const Product = process.env.MONGODB_URI ? require('../models/Product') : null;
+const db = require('../database');
 const { auth } = require('../middleware/auth');
 
 const router = express.Router();
@@ -29,28 +30,48 @@ router.post('/', auth, [
     let itemsPrice = 0;
     const orderItemsWithPrices = [];
 
-    if (!Product || !Order) return res.status(503).json({ message: 'Orders disabled in memory mode' });
-    for (const item of orderItems) {
-      const product = await Product.findById(item.product);
-      if (!product) {
-        return res.status(400).json({ message: `Product ${item.product} not found` });
+    if (Product && Order) {
+      for (const item of orderItems) {
+        const product = await Product.findById(item.product);
+        if (!product) {
+          return res.status(400).json({ message: `Product ${item.product} not found` });
+        }
+        const itemPrice = product.price * item.quantity;
+        itemsPrice += itemPrice;
+        orderItemsWithPrices.push({ product: item.product, quantity: item.quantity, price: product.price });
       }
-
-      const itemPrice = product.price * item.quantity;
-      itemsPrice += itemPrice;
-
-      orderItemsWithPrices.push({
-        product: item.product,
-        quantity: item.quantity,
-        price: product.price
-      });
+    } else {
+      for (const item of orderItems) {
+        const product = await db.getProductById(item.product);
+        if (!product) {
+          return res.status(400).json({ message: `Product ${item.product} not found` });
+        }
+        const itemPrice = product.price * item.quantity;
+        itemsPrice += itemPrice;
+        orderItemsWithPrices.push({ product: item.product, quantity: item.quantity, price: product.price });
+      }
     }
 
     const taxPrice = itemsPrice * 0.1; // 10% tax
     const shippingPrice = itemsPrice > 100 ? 0 : 10; // Free shipping over $100
     const totalPrice = itemsPrice + taxPrice + shippingPrice;
 
-    const order = new Order({
+    if (Order) {
+      const order = new Order({
+        user: req.user._id,
+        orderItems: orderItemsWithPrices,
+        shippingAddress,
+        paymentMethod,
+        itemsPrice,
+        taxPrice,
+        shippingPrice,
+        totalPrice
+      });
+      await order.save();
+      return res.status(201).json(order);
+    }
+
+    const created = await db.createOrder({
       user: req.user._id,
       orderItems: orderItemsWithPrices,
       shippingAddress,
@@ -58,12 +79,12 @@ router.post('/', auth, [
       itemsPrice,
       taxPrice,
       shippingPrice,
-      totalPrice
+      totalPrice,
+      isPaid: false,
+      isDelivered: false,
+      createdAt: new Date().toISOString()
     });
-
-    await order.save();
-
-    res.status(201).json(order);
+    return res.status(201).json(created);
   } catch (error) {
     console.error('Create order error:', error);
     res.status(500).json({ message: 'Server error' });
@@ -73,14 +94,62 @@ router.post('/', auth, [
 // Get user's orders
 router.get('/myorders', auth, async (req, res) => {
   try {
-    if (!Order) return res.status(503).json({ message: 'Orders disabled in memory mode' });
-    const orders = await Order.find({ user: req.user._id })
-      .populate('orderItems.product', 'name image price')
-      .sort({ createdAt: -1 });
-
-    res.json(orders);
+    if (Order) {
+      const orders = await Order.find({ user: req.user._id })
+        .populate('orderItems.product', 'name image price')
+        .sort({ createdAt: -1 });
+      return res.json(orders);
+    }
+    const orders = await db.getOrdersByUser(req.user._id);
+    const enriched = await Promise.all(
+      orders.map(async (o) => {
+        const orderItems = (o.orderItems || o.items || []).map((it) => ({ ...it }));
+        for (const it of orderItems) {
+          const productObj = await db.getProductById(it.product);
+          it.productDetails = productObj
+            ? { name: productObj.name, image: productObj.image, price: productObj.price }
+            : null;
+        }
+        return { ...o, orderItems };
+      })
+    );
+    return res.json(enriched.sort((a, b) => new Date(b.createdAt||0) - new Date(a.createdAt||0)));
   } catch (error) {
     console.error('Get orders error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Get all orders (Admin only) - Must be before /:id route
+router.get('/', auth, async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Access denied. Admin role required.' });
+    }
+
+    if (Order) {
+      const orders = await Order.find()
+        .populate('orderItems.product', 'name image price')
+        .populate('user', 'name email')
+        .sort({ createdAt: -1 });
+      return res.json(orders);
+    }
+    const orders = await db.getOrders();
+    const enriched = await Promise.all(
+      orders.map(async (o) => {
+        const orderItems = (o.orderItems || o.items || []).map((it) => ({ ...it }));
+        for (const it of orderItems) {
+          const productObj = await db.getProductById(it.product);
+          it.productDetails = productObj
+            ? { name: productObj.name, image: productObj.image, price: productObj.price }
+            : null;
+        }
+        return { ...o, orderItems };
+      })
+    );
+    return res.json(enriched.sort((a, b) => new Date(b.createdAt||0) - new Date(a.createdAt||0)));
+  } catch (error) {
+    console.error('Get all orders error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -88,21 +157,41 @@ router.get('/myorders', auth, async (req, res) => {
 // Get single order
 router.get('/:id', auth, async (req, res) => {
   try {
-    if (!Order) return res.status(503).json({ message: 'Orders disabled in memory mode' });
-    const order = await Order.findById(req.params.id)
-      .populate('orderItems.product', 'name image price')
-      .populate('user', 'name email');
+    if (Order) {
+      const order = await Order.findById(req.params.id)
+        .populate('orderItems.product', 'name image price')
+        .populate('user', 'name email');
+
+      if (!order) {
+        return res.status(404).json({ message: 'Order not found' });
+      }
+
+      if (order.user._id.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
+        return res.status(403).json({ message: 'Access denied' });
+      }
+
+      return res.json(order);
+    }
+
+    const all = await db.getOrders();
+    const order = all.find(o => o._id === req.params.id);
 
     if (!order) {
       return res.status(404).json({ message: 'Order not found' });
     }
 
-    // Check if user owns the order or is admin
-    if (order.user._id.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
+    if ((order.user?._id || order.user)?.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
       return res.status(403).json({ message: 'Access denied' });
     }
 
-    res.json(order);
+    const orderItems = (order.orderItems || order.items || []).map((it) => ({ ...it }));
+    for (const it of orderItems) {
+      const productObj = await db.getProductById(it.product);
+      it.productDetails = productObj
+        ? { name: productObj.name, image: productObj.image, price: productObj.price }
+        : null;
+    }
+    return res.json({ ...order, orderItems });
   } catch (error) {
     console.error('Get order error:', error);
     res.status(500).json({ message: 'Server error' });
@@ -112,47 +201,35 @@ router.get('/:id', auth, async (req, res) => {
 // Update order to paid
 router.put('/:id/pay', auth, async (req, res) => {
   try {
-    if (!Order) return res.status(503).json({ message: 'Orders disabled in memory mode' });
-    const order = await Order.findById(req.params.id);
-
-    if (!order) {
-      return res.status(404).json({ message: 'Order not found' });
+    if (Order) {
+      const order = await Order.findById(req.params.id);
+      if (!order) {
+        return res.status(404).json({ message: 'Order not found' });
+      }
+      if (order.user.toString() !== req.user._id.toString()) {
+        return res.status(403).json({ message: 'Access denied' });
+      }
+      order.isPaid = true;
+      order.paidAt = Date.now();
+      order.paymentResult = req.body;
+      await order.save();
+      return res.json(order);
     }
 
-    // Check if user owns the order
-    if (order.user.toString() !== req.user._id.toString()) {
+    const all = await db.getOrders();
+    const order = all.find(o => o._id === req.params.id);
+    if (!order) return res.status(404).json({ message: 'Order not found' });
+    if ((order.user?._id || order.user)?.toString() !== req.user._id.toString()) {
       return res.status(403).json({ message: 'Access denied' });
     }
-
-    order.isPaid = true;
-    order.paidAt = Date.now();
-    order.paymentResult = req.body;
-
-    await order.save();
-
-    res.json(order);
+    const updated = await db.updateOrder(req.params.id, {
+      isPaid: true,
+      paidAt: new Date().toISOString(),
+      paymentResult: req.body
+    });
+    return res.json(updated);
   } catch (error) {
     console.error('Update order payment error:', error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
-// Get all orders (Admin only)
-router.get('/', auth, async (req, res) => {
-  try {
-    if (req.user.role !== 'admin') {
-      return res.status(403).json({ message: 'Access denied. Admin role required.' });
-    }
-
-    if (!Order) return res.status(503).json({ message: 'Orders disabled in memory mode' });
-    const orders = await Order.find()
-      .populate('orderItems.product', 'name image price')
-      .populate('user', 'name email')
-      .sort({ createdAt: -1 });
-
-    res.json(orders);
-  } catch (error) {
-    console.error('Get all orders error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -164,18 +241,23 @@ router.put('/:id/deliver', auth, async (req, res) => {
       return res.status(403).json({ message: 'Access denied. Admin role required.' });
     }
 
-    const order = await Order.findById(req.params.id);
-
-    if (!order) {
-      return res.status(404).json({ message: 'Order not found' });
+    if (Order) {
+      const order = await Order.findById(req.params.id);
+      if (!order) {
+        return res.status(404).json({ message: 'Order not found' });
+      }
+      order.isDelivered = true;
+      order.deliveredAt = Date.now();
+      await order.save();
+      return res.json(order);
     }
 
-    order.isDelivered = true;
-    order.deliveredAt = Date.now();
-
-    await order.save();
-
-    res.json(order);
+    const updated = await db.updateOrder(req.params.id, {
+      isDelivered: true,
+      deliveredAt: new Date().toISOString()
+    });
+    if (!updated) return res.status(404).json({ message: 'Order not found' });
+    return res.json(updated);
   } catch (error) {
     console.error('Update order delivery error:', error);
     res.status(500).json({ message: 'Server error' });

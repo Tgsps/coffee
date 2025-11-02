@@ -23,9 +23,14 @@ import Profile from './pages/Profile';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import Orders from './pages/Orders';
+import AdminDashboard from './pages/AdminDashboard';
+import AdminProducts from './pages/AdminProducts';
+import AdminOrders from './pages/AdminOrders';
+import AdminUsers from './pages/AdminUsers';
 
 // Protected Route Component
 import ProtectedRoute from './components/ProtectedRoute';
+import AdminRoute from './components/AdminRoute';
 
 function App() {
   return (
@@ -66,6 +71,38 @@ function App() {
                     <ProtectedRoute>
                       <Orders />
                     </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/admin" 
+                  element={
+                    <AdminRoute>
+                      <AdminDashboard />
+                    </AdminRoute>
+                  } 
+                />
+                <Route 
+                  path="/admin/products" 
+                  element={
+                    <AdminRoute>
+                      <AdminProducts />
+                    </AdminRoute>
+                  } 
+                />
+                <Route 
+                  path="/admin/orders" 
+                  element={
+                    <AdminRoute>
+                      <AdminOrders />
+                    </AdminRoute>
+                  } 
+                />
+                <Route 
+                  path="/admin/users" 
+                  element={
+                    <AdminRoute>
+                      <AdminUsers />
+                    </AdminRoute>
                   } 
                 />
               </Routes>

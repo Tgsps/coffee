@@ -25,6 +25,7 @@ app.use(express.static(buildPath));
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/products', require('./routes/products'));
 app.use('/api/orders', require('./routes/orders'));
+app.use('/api/admin', require('./routes/admin'));
 
 // Database connection
 const db = require('./database');
@@ -37,6 +38,18 @@ db.connect().then(async (connected) => {
   } else {
     // Use in-memory storage with sample data
     await db.seedData();
+  }
+
+  // Ensure default admin user exists
+  try {
+    await db.ensureAdminUser({
+      email: 'tamimghassan@gmail.com',
+      password: '1234567890',
+      name: 'Admin'
+    });
+    console.log('✅ Ensured default admin user exists');
+  } catch (e) {
+    console.error('⚠️ Failed to ensure default admin user:', e?.message || e);
   }
 });
 
