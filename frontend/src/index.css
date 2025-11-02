@@ -6,10 +6,20 @@
 @layer base {
   html {
     font-family: 'Inter', system-ui, sans-serif;
+    scroll-behavior: smooth;
   }
   
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Playfair Display', serif;
+    letter-spacing: -0.02em;
+  }
+
+  body {
+    line-height: 1.7;
+  }
+
+  p {
+    line-height: 1.8;
   }
 }
 

@@ -6,6 +6,46 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        // Premium palette - charcoal/black tones
+        charcoal: {
+          50: '#f5f5f5',
+          100: '#e5e5e5',
+          200: '#d4d4d4',
+          300: '#a3a3a3',
+          400: '#737373',
+          500: '#525252',
+          600: '#404040',
+          700: '#262626',
+          800: '#1a1a1a',
+          900: '#0f0f0f',
+        },
+        // Earth tones - muted and refined
+        earth: {
+          50: '#faf8f5',
+          100: '#f3ede4',
+          200: '#e5d9c8',
+          300: '#d4c0a8',
+          400: '#b89d80',
+          500: '#9d8165',
+          600: '#7d664f',
+          700: '#5d4a3a',
+          800: '#3d3025',
+          900: '#1d1810',
+        },
+        // Pastel rose accent
+        rose: {
+          50: '#fdf2f8',
+          100: '#fce7f3',
+          200: '#fbcfe8',
+          300: '#f9a8d4',
+          400: '#f472b6',
+          500: '#ec4899',
+          600: '#db2777',
+          700: '#be185d',
+          800: '#9f1239',
+          900: '#831843',
+        },
+        // Keep existing for backward compatibility
         luxe: {
           espresso: '#2B211D',
           espressoDark: '#1E1714',

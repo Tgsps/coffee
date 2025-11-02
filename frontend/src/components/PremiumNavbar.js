@@ -1,14 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 
-const Navbar = () => {
+const PremiumNavbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const { isAuthenticated, user, logout } = useAuth();
   const { getCartItemsCount } = useCart();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -17,36 +27,69 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-charcoal-900 text-white shadow-lg border-b border-charcoal-800">
+    <nav
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        isScrolled
+          ? 'bg-charcoal-900/95 backdrop-blur-md shadow-lg'
+          : 'bg-transparent'
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-3">
-            <span className="font-serif text-2xl font-bold tracking-tight">ONYX</span>
+            <span className="font-serif text-2xl font-bold text-white tracking-tight">
+              ONYX
+            </span>
           </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-10">
-            <Link to="/" className="text-white/90 hover:text-white transition-colors text-sm tracking-wide uppercase">
-              Home
-            </Link>
-            <Link to="/products" className="text-white/90 hover:text-white transition-colors text-sm tracking-wide uppercase">
+            <a
+              href="#story"
+              className="text-white/90 hover:text-white transition-colors text-sm tracking-wide uppercase"
+            >
+              Story
+            </a>
+            <a
+              href="#products"
+              className="text-white/90 hover:text-white transition-colors text-sm tracking-wide uppercase"
+            >
               Products
-            </Link>
-            <Link to="/about" className="text-white/90 hover:text-white transition-colors text-sm tracking-wide uppercase">
-              About
-            </Link>
-            <Link to="/contact" className="text-white/90 hover:text-white transition-colors text-sm tracking-wide uppercase">
-              Contact
-            </Link>
+            </a>
+            <a
+              href="#process"
+              className="text-white/90 hover:text-white transition-colors text-sm tracking-wide uppercase"
+            >
+              Process
+            </a>
+            <a
+              href="#shop"
+              className="text-white/90 hover:text-white transition-colors text-sm tracking-wide uppercase"
+            >
+              Shop
+            </a>
           </div>
 
           {/* Right side - Cart and Auth */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-6">
             {/* Cart */}
-            <Link to="/cart" className="relative p-2 text-white/90 hover:text-white transition-colors">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01" />
+            <Link
+              to="/cart"
+              className="relative p-2 text-white/90 hover:text-white transition-colors"
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"
+                />
               </svg>
               {getCartItemsCount() > 0 && (
                 <span className="absolute -top-1 -right-1 bg-rose-400 text-charcoal-900 text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
@@ -126,11 +169,26 @@ const Navbar = () => {
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="md:hidden p-2 text-white/90 hover:text-white transition-colors"
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
                 {isMenuOpen ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
                 )}
               </svg>
             </button>
@@ -141,34 +199,34 @@ const Navbar = () => {
         {isMenuOpen && (
           <div className="md:hidden pb-6">
             <div className="flex flex-col space-y-4 pt-4 border-t border-white/10">
-              <Link
-                to="/"
+              <a
+                href="#story"
                 className="text-white/90 hover:text-white transition-colors text-sm tracking-wide uppercase"
                 onClick={() => setIsMenuOpen(false)}
               >
-                Home
-              </Link>
-              <Link
-                to="/products"
+                Story
+              </a>
+              <a
+                href="#products"
                 className="text-white/90 hover:text-white transition-colors text-sm tracking-wide uppercase"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Products
-              </Link>
-              <Link
-                to="/about"
+              </a>
+              <a
+                href="#process"
                 className="text-white/90 hover:text-white transition-colors text-sm tracking-wide uppercase"
                 onClick={() => setIsMenuOpen(false)}
               >
-                About
-              </Link>
-              <Link
-                to="/contact"
+                Process
+              </a>
+              <a
+                href="#shop"
                 className="text-white/90 hover:text-white transition-colors text-sm tracking-wide uppercase"
                 onClick={() => setIsMenuOpen(false)}
               >
-                Contact
-              </Link>
+                Shop
+              </a>
               {!isAuthenticated && (
                 <>
                   <Link
@@ -195,4 +253,5 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default PremiumNavbar;
+

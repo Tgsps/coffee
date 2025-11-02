@@ -3,20 +3,17 @@ import { Link } from 'react-router-dom';
 
 const Footer = () => {
   return (
-    <footer className="bg-beige-50 text-beige-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+    <footer className="bg-charcoal-900 text-white border-t border-charcoal-800">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
           {/* Company Info */}
           <div className="col-span-1 md:col-span-2">
-            <div className="flex items-center space-x-2 mb-4">
-              <div className="w-8 h-8 bg-black rounded-full flex items-center justify-center">
-                <span className="text-white font-bold text-lg">☕</span>
-              </div>
-              <span className="font-serif text-xl font-bold tracking-tight">CoffeeShop</span>
+            <div className="mb-6">
+              <span className="font-serif text-3xl font-bold tracking-tight">ONYX</span>
             </div>
-            <p className="text-beige-600 mb-4 max-w-md">
-              We're passionate about bringing you the finest coffee beans from around the world. 
-              Every cup tells a story of quality, tradition, and exceptional taste.
+            <p className="text-white/60 mb-6 max-w-md leading-relaxed">
+              Precision roasting, transparent sourcing, exceptional coffee. Craft
+              meets science in every cup.
             </p>
             <div className="flex space-x-4">
               {/* Instagram */}
@@ -25,12 +22,10 @@ const Footer = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram"
-                className="text-beige-600 hover:text-beige-900 transition-colors"
+                className="w-10 h-10 border border-white/20 rounded-full flex items-center justify-center hover:bg-white/10 transition-colors"
               >
-                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zm0 2a3 3 0 00-3 3v10a3 3 0 003 3h10a3 3 0 003-3V7a3 3 0 00-3-3H7z"></path>
-                  <path d="M12 7a5 5 0 110 10 5 5 0 010-10zm0 2.2a2.8 2.8 0 100 5.6 2.8 2.8 0 000-5.6z"></path>
-                  <circle cx="17.5" cy="6.5" r="1.2"></circle>
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
                 </svg>
               </a>
               {/* Facebook */}
@@ -39,10 +34,10 @@ const Footer = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Facebook"
-                className="text-beige-600 hover:text-beige-900 transition-colors"
+                className="w-10 h-10 border border-white/20 rounded-full flex items-center justify-center hover:bg-white/10 transition-colors"
               >
-                <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                  <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.877v-6.987H7.898v-2.89h2.54V9.845c0-2.507 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.261c-1.243 0-1.63.772-1.63 1.562v1.875h2.773l-.443 2.89h-2.33v6.987C18.343 21.128 22 16.991 22 12z"/>
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v1.875h2.773l-.443 2.89h-2.33v6.987C19.612 23.027 24 18.062 24 12.073z" />
                 </svg>
               </a>
               {/* Google Maps */}
@@ -51,11 +46,11 @@ const Footer = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Google Maps"
-                className="text-beige-600 hover:text-beige-900 transition-colors"
+                className="w-10 h-10 border border-white/20 rounded-full flex items-center justify-center hover:bg-white/10 transition-colors"
               >
-                <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                  <path d="M12 2C7.589 2 4 5.589 4 10c0 5.25 6.47 11.32 7.02 11.85a1.389 1.389 0 001.96 0C13.53 21.32 20 15.25 20 10c0-4.411-3.589-8-8-8zm0 18.24C9.88 18.12 6 13.76 6 10a6 6 0 1112 0c0 3.76-3.88 8.12-6 10.24z"/>
-                  <circle cx="12" cy="10" r="3"/>
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2C7.589 2 4 5.589 4 10c0 5.25 6.47 11.32 7.02 11.85a1.389 1.389 0 001.96 0C13.53 21.32 20 15.25 20 10c0-4.411-3.589-8-8-8zm0 18.24C9.88 18.12 6 13.76 6 10a6 6 0 1112 0c0 3.76-3.88 8.12-6 10.24z" />
+                  <circle cx="12" cy="10" r="3" />
                 </svg>
               </a>
             </div>
@@ -64,24 +59,24 @@ const Footer = () => {
           {/* Quick Links */}
           <div>
             <h3 className="font-serif text-lg font-semibold mb-4">Quick Links</h3>
-            <ul className="space-y-2">
+            <ul className="space-y-3">
               <li>
-                <Link to="/" className="text-beige-600 hover:text-beige-900 transition-colors">
+                <Link to="/" className="text-white/60 hover:text-white transition-colors">
                   Home
                 </Link>
               </li>
               <li>
-                <Link to="/products" className="text-beige-600 hover:text-beige-900 transition-colors">
+                <Link to="/products" className="text-white/60 hover:text-white transition-colors">
                   Products
                 </Link>
               </li>
               <li>
-                <Link to="/about" className="text-beige-600 hover:text-beige-900 transition-colors">
+                <Link to="/about" className="text-white/60 hover:text-white transition-colors">
                   About Us
                 </Link>
               </li>
               <li>
-                <Link to="/contact" className="text-beige-600 hover:text-beige-900 transition-colors">
+                <Link to="/contact" className="text-white/60 hover:text-white transition-colors">
                   Contact
                 </Link>
               </li>
@@ -91,7 +86,7 @@ const Footer = () => {
           {/* Contact Info */}
           <div>
             <h3 className="font-serif text-lg font-semibold mb-4">Contact Info</h3>
-            <div className="space-y-2 text-beige-600">
+            <div className="space-y-3 text-white/60">
               <div className="flex items-center space-x-2">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -115,8 +110,25 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="border-t border-beige-200 mt-8 pt-8 text-center text-beige-600">
-          <p>&copy; 2024 CoffeeShop. All rights reserved.</p>
+        {/* Bottom Bar */}
+        <div className="pt-8 border-t border-charcoal-800 flex flex-col md:flex-row justify-between items-center">
+          <p className="text-white/40 text-sm">
+            © {new Date().getFullYear()} ONYX Coffee Lab. All rights reserved.
+          </p>
+          <div className="flex space-x-6 mt-4 md:mt-0">
+            <a
+              href="#"
+              className="text-white/40 hover:text-white/60 text-sm transition-colors"
+            >
+              Privacy Policy
+            </a>
+            <a
+              href="#"
+              className="text-white/40 hover:text-white/60 text-sm transition-colors"
+            >
+              Terms of Service
+            </a>
+          </div>
         </div>
       </div>
     </footer>

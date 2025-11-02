@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 
 const Register = () => {
@@ -11,6 +12,7 @@ const Register = () => {
     phone: ''
   });
   const [errors, setErrors] = useState({});
+  const [focused, setFocused] = useState('');
   const { register, isAuthenticated, loading, error, clearError } = useAuth();
   const navigate = useNavigate();
 
@@ -26,17 +28,14 @@ const Register = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
     
-    // Clear error when user starts typing
     if (errors[name]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: ''
-      }));
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        return newErrors;
+      });
     }
   };
 
@@ -67,7 +66,7 @@ const Register = () => {
       newErrors.confirmPassword = 'Passwords do not match';
     }
 
-    if (formData.phone && !/^[\+]?[1-9][\d]{0,15}$/.test(formData.phone.replace(/\s/g, ''))) {
+    if (formData.phone && !/^\+?[1-9][\d]{0,15}$/.test(formData.phone.replace(/\s/g, ''))) {
       newErrors.phone = 'Please enter a valid phone number';
     }
 
@@ -90,178 +89,227 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen bg-beige-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div className="text-center">
-          <div className="flex justify-center">
-            <div className="w-16 h-16 bg-gold-500 rounded-full flex items-center justify-center">
-              <span className="text-coffee-800 font-bold text-2xl">☕</span>
-            </div>
-          </div>
-          <h2 className="mt-6 text-3xl font-serif font-bold text-coffee-800">
+    <div className="min-h-screen bg-charcoal-900 flex items-center justify-center py-16 px-4 sm:px-6 lg:px-8">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="max-w-md w-full"
+      >
+        <div className="text-center mb-10">
+          <span className="font-serif text-4xl font-bold text-white block mb-2">ONYX</span>
+          <h2 className="text-3xl md:text-4xl font-serif font-bold text-white mb-3">
             Create Your Account
           </h2>
-          <p className="mt-2 text-sm text-beige-600">
+          <p className="text-white/60">
             Join our coffee community and start your journey
           </p>
         </div>
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="bg-white rounded-lg shadow-md p-8">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="bg-charcoal-800 border border-charcoal-700 rounded-2xl p-8"
+          >
             {error && (
-              <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="mb-6 p-4 bg-rose-400/20 border border-rose-400/30 text-rose-400 rounded-lg"
+              >
                 {error}
-              </div>
+              </motion.div>
             )}
 
-            <div>
-              <label htmlFor="name" className="block text-sm font-medium text-coffee-700 mb-2">
-                Full Name
-              </label>
-              <input
-                id="name"
-                name="name"
-                type="text"
-                autoComplete="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                className={`input-field ${errors.name ? 'border-red-500' : ''}`}
-                placeholder="Enter your full name"
-              />
-              {errors.name && (
-                <p className="mt-1 text-sm text-red-600">{errors.name}</p>
-              )}
+            <div className="space-y-6">
+              <div>
+                <label htmlFor="name" className="block text-sm font-medium text-white/90 mb-3">
+                  Full Name
+                </label>
+                <input
+                  id="name"
+                  name="name"
+                  type="text"
+                  autoComplete="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  onFocus={() => setFocused('name')}
+                  onBlur={() => setFocused('')}
+                  className={`w-full px-4 py-4 bg-charcoal-900 border rounded-lg text-white placeholder-white/40 transition-all ${
+                    focused === 'name'
+                      ? 'border-gold-400 ring-2 ring-gold-400/50'
+                      : errors.name
+                      ? 'border-rose-400 ring-2 ring-rose-400/50'
+                      : 'border-charcoal-700 hover:border-charcoal-600'
+                  }`}
+                  placeholder="Enter your full name"
+                />
+                {errors.name && (
+                  <p className="mt-2 text-sm text-rose-400">{errors.name}</p>
+                )}
+              </div>
+
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-white/90 mb-3">
+                  Email Address
+                </label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  onFocus={() => setFocused('email')}
+                  onBlur={() => setFocused('')}
+                  className={`w-full px-4 py-4 bg-charcoal-900 border rounded-lg text-white placeholder-white/40 transition-all ${
+                    focused === 'email'
+                      ? 'border-gold-400 ring-2 ring-gold-400/50'
+                      : errors.email
+                      ? 'border-rose-400 ring-2 ring-rose-400/50'
+                      : 'border-charcoal-700 hover:border-charcoal-600'
+                  }`}
+                  placeholder="Enter your email"
+                />
+                {errors.email && (
+                  <p className="mt-2 text-sm text-rose-400">{errors.email}</p>
+                )}
+              </div>
+
+              <div>
+                <label htmlFor="phone" className="block text-sm font-medium text-white/90 mb-3">
+                  Phone Number (Optional)
+                </label>
+                <input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  autoComplete="tel"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  onFocus={() => setFocused('phone')}
+                  onBlur={() => setFocused('')}
+                  className={`w-full px-4 py-4 bg-charcoal-900 border rounded-lg text-white placeholder-white/40 transition-all ${
+                    focused === 'phone'
+                      ? 'border-gold-400 ring-2 ring-gold-400/50'
+                      : errors.phone
+                      ? 'border-rose-400 ring-2 ring-rose-400/50'
+                      : 'border-charcoal-700 hover:border-charcoal-600'
+                  }`}
+                  placeholder="+1 (555) 123-4567"
+                />
+                {errors.phone && (
+                  <p className="mt-2 text-sm text-rose-400">{errors.phone}</p>
+                )}
+              </div>
+
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium text-white/90 mb-3">
+                  Password
+                </label>
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  autoComplete="new-password"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  onFocus={() => setFocused('password')}
+                  onBlur={() => setFocused('')}
+                  className={`w-full px-4 py-4 bg-charcoal-900 border rounded-lg text-white placeholder-white/40 transition-all ${
+                    focused === 'password'
+                      ? 'border-gold-400 ring-2 ring-gold-400/50'
+                      : errors.password
+                      ? 'border-rose-400 ring-2 ring-rose-400/50'
+                      : 'border-charcoal-700 hover:border-charcoal-600'
+                  }`}
+                  placeholder="Create a password"
+                />
+                {errors.password && (
+                  <p className="mt-2 text-sm text-rose-400">{errors.password}</p>
+                )}
+              </div>
+
+              <div>
+                <label htmlFor="confirmPassword" className="block text-sm font-medium text-white/90 mb-3">
+                  Confirm Password
+                </label>
+                <input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type="password"
+                  autoComplete="new-password"
+                  value={formData.confirmPassword}
+                  onChange={handleInputChange}
+                  onFocus={() => setFocused('confirmPassword')}
+                  onBlur={() => setFocused('')}
+                  className={`w-full px-4 py-4 bg-charcoal-900 border rounded-lg text-white placeholder-white/40 transition-all ${
+                    focused === 'confirmPassword'
+                      ? 'border-gold-400 ring-2 ring-gold-400/50'
+                      : errors.confirmPassword
+                      ? 'border-rose-400 ring-2 ring-rose-400/50'
+                      : 'border-charcoal-700 hover:border-charcoal-600'
+                  }`}
+                  placeholder="Confirm your password"
+                />
+                {errors.confirmPassword && (
+                  <p className="mt-2 text-sm text-rose-400">{errors.confirmPassword}</p>
+                )}
+              </div>
             </div>
 
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-coffee-700 mb-2">
-                Email Address
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                className={`input-field ${errors.email ? 'border-red-500' : ''}`}
-                placeholder="Enter your email"
-              />
-              {errors.email && (
-                <p className="mt-1 text-sm text-red-600">{errors.email}</p>
-              )}
-            </div>
-
-            <div>
-              <label htmlFor="phone" className="block text-sm font-medium text-coffee-700 mb-2">
-                Phone Number (Optional)
-              </label>
-              <input
-                id="phone"
-                name="phone"
-                type="tel"
-                autoComplete="tel"
-                value={formData.phone}
-                onChange={handleInputChange}
-                className={`input-field ${errors.phone ? 'border-red-500' : ''}`}
-                placeholder="Enter your phone number"
-              />
-              {errors.phone && (
-                <p className="mt-1 text-sm text-red-600">{errors.phone}</p>
-              )}
-            </div>
-
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-coffee-700 mb-2">
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="new-password"
-                value={formData.password}
-                onChange={handleInputChange}
-                className={`input-field ${errors.password ? 'border-red-500' : ''}`}
-                placeholder="Create a password"
-              />
-              {errors.password && (
-                <p className="mt-1 text-sm text-red-600">{errors.password}</p>
-              )}
-            </div>
-
-            <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-coffee-700 mb-2">
-                Confirm Password
-              </label>
-              <input
-                id="confirmPassword"
-                name="confirmPassword"
-                type="password"
-                autoComplete="new-password"
-                value={formData.confirmPassword}
-                onChange={handleInputChange}
-                className={`input-field ${errors.confirmPassword ? 'border-red-500' : ''}`}
-                placeholder="Confirm your password"
-              />
-              {errors.confirmPassword && (
-                <p className="mt-1 text-sm text-red-600">{errors.confirmPassword}</p>
-              )}
-            </div>
-
-            <div className="flex items-center">
+            <div className="flex items-start mt-6">
               <input
                 id="terms"
                 name="terms"
                 type="checkbox"
                 required
-                className="h-4 w-4 text-coffee-600 focus:ring-coffee-500 border-beige-300 rounded"
+                className="w-5 h-5 rounded border-charcoal-700 bg-charcoal-900 text-gold-400 focus:ring-gold-400 mt-1"
               />
-              <label htmlFor="terms" className="ml-2 block text-sm text-beige-600">
+              <label htmlFor="terms" className="ml-3 block text-sm text-white/70">
                 I agree to the{' '}
-                <a href="#" className="text-coffee-600 hover:text-coffee-500">
+                <button type="button" className="text-gold-400 hover:text-gold-300 transition-colors">
                   Terms of Service
-                </a>{' '}
+                </button>{' '}
                 and{' '}
-                <a href="#" className="text-coffee-600 hover:text-coffee-500">
+                <button type="button" className="text-gold-400 hover:text-gold-300 transition-colors">
                   Privacy Policy
-                </a>
+                </button>
               </label>
             </div>
 
-            <div>
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full btn-primary text-lg py-3 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {loading ? 'Creating Account...' : 'Create Account'}
-              </button>
-            </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-gold-400 hover:bg-gold-300 text-charcoal-900 py-4 rounded-full font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 mt-8"
+            >
+              {loading ? 'Creating Account...' : 'Create Account'}
+            </button>
 
             <div className="mt-6 text-center">
-              <p className="text-sm text-beige-600">
+              <p className="text-sm text-white/60">
                 Already have an account?{' '}
                 <Link
                   to="/login"
-                  className="font-medium text-coffee-600 hover:text-coffee-500"
+                  className="font-medium text-gold-400 hover:text-gold-300 transition-colors"
                 >
                   Sign in here
                 </Link>
               </p>
             </div>
-          </div>
+          </motion.div>
         </form>
 
-        <div className="text-center">
+        <div className="text-center mt-6">
           <Link
             to="/"
-            className="text-coffee-600 hover:text-coffee-800 transition-colors"
+            className="text-white/60 hover:text-white transition-colors text-sm"
           >
             ← Back to Home
           </Link>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

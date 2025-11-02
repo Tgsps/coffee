@@ -78,20 +78,33 @@ const Products = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // Flavor profile colors mapping
+  const getFlavorColor = (index) => {
+    const colors = [
+      { bg: 'bg-rose-400', border: 'border-rose-400' }, // Fruity/Berry notes
+      { bg: 'bg-earth-400', border: 'border-earth-400' }, // Nutty/Earthy notes
+      { bg: 'bg-gold-400', border: 'border-gold-400' }, // Caramel/Chocolate notes
+      { bg: 'bg-rose-300', border: 'border-rose-300' }, // Floral notes
+      { bg: 'bg-earth-300', border: 'border-earth-300' }, // Spice notes
+      { bg: 'bg-gold-300', border: 'border-gold-300' }, // Sweet notes
+    ];
+    return colors[index % colors.length];
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-luxe.matte to-luxe.espresso text-luxe.cream">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="min-h-screen bg-charcoal-900">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: 'easeOut' }}
-          className="text-center mb-10"
+          className="text-center mb-12"
         >
-          <h1 className="text-4xl md:text-5xl font-serif font-bold tracking-tight text-luxe.cream drop-shadow-sm">
+          <h1 className="text-4xl md:text-6xl font-serif font-bold tracking-tight text-white mb-6">
             Our Coffee Collection
           </h1>
-          <p className="mt-3 text-base md:text-lg text-luxe.creamMuted/80 max-w-2xl mx-auto">
+          <p className="text-xl text-white/60 max-w-2xl mx-auto">
             Discover our carefully curated selection of premium coffee, crafted for discerning tastes
           </p>
         </motion.div>
@@ -101,12 +114,12 @@ const Products = () => {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: 'easeOut', delay: 0.1 }}
-          className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.6)] p-6 mb-10"
+          className="bg-charcoal-800 border border-charcoal-700 rounded-2xl p-6 mb-10"
         >
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             {/* Search */}
             <div>
-              <label className="block text-sm font-medium text-luxe.cream mb-2">
+              <label className="block text-sm font-medium text-white/90 mb-2">
                 Search
               </label>
               <input
@@ -114,19 +127,19 @@ const Products = () => {
                 placeholder="Search products..."
                 value={filters.search}
                 onChange={(e) => handleFilterChange('search', e.target.value)}
-                className="input-field bg-white/10 border-white/10 text-luxe.cream placeholder-white/40"
+                className="w-full px-4 py-3 bg-charcoal-900 border border-charcoal-700 rounded-lg text-white placeholder-white/40 focus:ring-2 focus:ring-rose-400 focus:border-transparent transition-colors"
               />
             </div>
 
             {/* Category */}
             <div>
-              <label className="block text-sm font-medium text-luxe.cream mb-2">
+              <label className="block text-sm font-medium text-white/90 mb-2">
                 Category
               </label>
               <select
                 value={filters.category}
                 onChange={(e) => handleFilterChange('category', e.target.value)}
-                className="input-field bg-white/10 border-white/10 text-luxe.cream"
+                className="w-full px-4 py-3 bg-charcoal-900 border border-charcoal-700 rounded-lg text-white focus:ring-2 focus:ring-rose-400 focus:border-transparent transition-colors"
               >
                 {categories.map(category => (
                   <option key={category.value} value={category.value}>
@@ -138,13 +151,13 @@ const Products = () => {
 
             {/* Sort */}
             <div>
-              <label className="block text-sm font-medium text-luxe.cream mb-2">
+              <label className="block text-sm font-medium text-white/90 mb-2">
                 Sort By
               </label>
               <select
                 value={filters.sort}
                 onChange={(e) => handleFilterChange('sort', e.target.value)}
-                className="input-field bg-white/10 border-white/10 text-luxe.cream"
+                className="w-full px-4 py-3 bg-charcoal-900 border border-charcoal-700 rounded-lg text-white focus:ring-2 focus:ring-rose-400 focus:border-transparent transition-colors"
               >
                 {sortOptions.map(option => (
                   <option key={option.value} value={option.value}>
@@ -156,7 +169,7 @@ const Products = () => {
 
             {/* Results Count */}
             <div className="flex items-end">
-              <div className="text-sm text-luxe.cream/70">
+              <div className="text-sm text-white/60">
                 Showing {products.length} of {pagination.total} products
               </div>
             </div>
@@ -166,15 +179,15 @@ const Products = () => {
         {/* Products Grid */}
         {loading ? (
           <div className="flex justify-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-luxe.gold"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
           </div>
         ) : products.length === 0 ? (
           <div className="text-center py-12">
             <div className="text-6xl mb-4">☕</div>
-            <h3 className="text-xl font-semibold text-luxe.cream mb-2">
+            <h3 className="text-xl font-semibold text-white mb-2">
               No products found
             </h3>
-            <p className="text-luxe.cream/70">
+            <p className="text-white/60">
               Try adjusting your search or filter criteria
             </p>
           </div>
@@ -183,50 +196,51 @@ const Products = () => {
             <AnimatePresence>
               <motion.div
                 layout
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8"
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mb-12"
               >
                 {products.map((product, idx) => (
                   <motion.div
                     key={product._id}
-                    initial={{ opacity: 0, y: 12 }}
+                    initial={{ opacity: 0, y: 40 }}
                     animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 12 }}
-                    transition={{ duration: 0.4, ease: 'easeOut', delay: 0.03 * idx }}
-                    whileHover={{ scale: 1.02 }}
-                    className="group rounded-2xl overflow-hidden backdrop-blur bg-white/5 border border-white/10 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.7)] hover:shadow-[0_20px_60px_-12px_rgba(201,162,39,0.35)] hover:border-luxe.gold/60 transition-all duration-300"
+                    exit={{ opacity: 0, y: 40 }}
+                    transition={{ duration: 0.6, ease: 'easeOut', delay: idx * 0.1 }}
+                    whileHover={{ y: -8 }}
+                    className="bg-charcoal-900 rounded-2xl overflow-hidden border border-charcoal-700 hover:border-charcoal-600 transition-all group"
                   >
-                  <Link to={`/products/${product._id}`}>
-                      <div className="aspect-w-1 aspect-h-1">
+                    <Link to={`/products/${product._id}`}>
+                      <div className="relative aspect-[4/3] overflow-hidden">
                         <img
                           src={product.image}
                           alt={product.name}
-                          className="w-full h-56 object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                         />
+                        <div className={`absolute top-4 right-4 w-16 h-16 rounded-full ${getFlavorColor(idx).bg} opacity-80 backdrop-blur-sm border-2 border-white/30`} />
+                        <div className="absolute inset-0 bg-gradient-to-t from-charcoal-900 via-transparent to-transparent" />
                       </div>
-                  </Link>
-                    <div className="p-5">
+                    </Link>
+                    <div className="p-6">
                       <Link to={`/products/${product._id}`}>
-                        <h3 className="text-lg font-serif font-semibold text-luxe.cream mb-2 tracking-tight group-hover:text-luxe.gold transition-colors">
+                        <h3 className="text-2xl font-serif font-semibold text-white mb-2">
                           {product.name}
                         </h3>
                       </Link>
-                      <p className="text-sm text-luxe.cream/70 mb-4 line-clamp-2">
+                      <p className="text-white/60 mb-4 line-clamp-2">
                         {product.description}
                       </p>
-                      <div className="flex items-center justify-between mb-3">
-                        <span className="text-xl font-bold text-luxe.gold">
+                      <div className="flex items-center justify-between mb-4">
+                        <span className="text-3xl font-bold text-white">
                           ${product.price}
                         </span>
-                        <span className="text-xs bg-white/10 text-luxe.cream px-2 py-1 rounded-full border border-white/10">
-                          {product.category}
-                        </span>
-                      </div>
-                      <div className="flex items-center">
-                        <div className="flex text-luxe.gold">
+                        <div className="flex items-center gap-1">
                           {[...Array(5)].map((_, i) => (
                             <svg
                               key={i}
-                              className={`w-4 h-4 ${i < Math.floor(product.rating) ? 'text-luxe.gold' : 'text-white/20'}`}
+                              className={`w-4 h-4 ${
+                                i < Math.floor(product.rating || 5)
+                                  ? 'text-gold-400'
+                                  : 'text-charcoal-600'
+                              }`}
                               fill="currentColor"
                               viewBox="0 0 20 20"
                             >
@@ -234,18 +248,22 @@ const Products = () => {
                             </svg>
                           ))}
                         </div>
-                        <span className="ml-2 text-sm text-luxe.cream/60">
-                          ({product.reviews?.length || 0})
-                        </span>
                       </div>
-
-                      <button
-                        onClick={() => handleAddToCart(product)}
-                        className="w-full mt-4 py-2 rounded-xl bg-gradient-to-r from-luxe.gold to-luxe.goldSoft text-luxe.matte font-semibold tracking-wide hover:from-luxe.goldSoft hover:to-luxe.gold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                        disabled={!product.inStock}
-                      >
-                        {product.inStock ? 'Add to Cart' : 'Out of Stock'}
-                      </button>
+                      <div className="flex gap-3">
+                        <Link
+                          to={`/products/${product._id}`}
+                          className="flex-1 text-center border-2 border-white/20 text-white py-3 rounded-full hover:bg-white/10 transition-all text-sm font-medium"
+                        >
+                          View Details
+                        </Link>
+                        <button
+                          onClick={() => handleAddToCart(product)}
+                          disabled={!product.inStock}
+                          className="flex-1 bg-white text-charcoal-900 py-3 rounded-full hover:bg-white/90 transition-all text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          {product.inStock ? 'Add to Cart' : 'Out of Stock'}
+                        </button>
+                      </div>
                     </div>
                   </motion.div>
                 ))}
@@ -258,7 +276,7 @@ const Products = () => {
                 <button
                   onClick={() => handlePageChange(pagination.currentPage - 1)}
                   disabled={pagination.currentPage === 1}
-                  className="px-3 py-2 rounded-lg border border-coffee-300 text-coffee-700 hover:bg-coffee-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-4 py-2 rounded-full border border-white/20 text-white hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
                   Previous
                 </button>
@@ -269,10 +287,10 @@ const Products = () => {
                     <button
                       key={page}
                       onClick={() => handlePageChange(page)}
-                      className={`px-3 py-2 rounded-lg ${
+                      className={`px-4 py-2 rounded-full transition-all ${
                         page === pagination.currentPage
-                          ? 'bg-coffee-700 text-white'
-                          : 'border border-coffee-300 text-coffee-700 hover:bg-coffee-50'
+                          ? 'bg-white text-charcoal-900'
+                          : 'border border-white/20 text-white hover:bg-white/10'
                       }`}
                     >
                       {page}
@@ -283,7 +301,7 @@ const Products = () => {
                 <button
                   onClick={() => handlePageChange(pagination.currentPage + 1)}
                   disabled={pagination.currentPage === pagination.totalPages}
-                  className="px-3 py-2 rounded-lg border border-coffee-300 text-coffee-700 hover:bg-coffee-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-4 py-2 rounded-full border border-white/20 text-white hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
                   Next
                 </button>
