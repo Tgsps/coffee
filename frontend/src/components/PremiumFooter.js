@@ -10,7 +10,7 @@ const PremiumFooter = () => {
           <div className="col-span-1 md:col-span-2">
             <div className="mb-6">
               <span className="font-serif text-3xl font-bold tracking-tight">
-                21<img src="https://i.ibb.co/bgndCPCv/72818780-d3ba-4367-b620-58e55790f53d.png" alt="coffee icon" className="inline-block w-5 h-5 mx-1 align-middle" referrerPolicy="no-referrer" />coffee
+                <img src="https://i.ibb.co/bgndCPCv/72818780-d3ba-4367-b620-58e55790f53d.png" alt="coffee icon" className="inline-block w-6 h-6 mx-1 align-middle" referrerPolicy="no-referrer" />coffee
               </span>
             </div>
             <p className="text-white/60 mb-6 max-w-md leading-relaxed">
