@@ -96,7 +96,7 @@ const Register = () => {
         className="max-w-md w-full"
       >
         <div className="text-center mb-10">
-          <span className="font-serif text-4xl font-bold text-white block mb-2"><img src="https://i.ibb.co/bgndCPCv/72818780-d3ba-4367-b620-58e55790f53d.png" alt="coffee icon" className="inline-block w-8 h-8 mx-2 align-middle" referrerPolicy="no-referrer" />coffee</span>
+          <span className="font-serif text-4xl font-bold text-white block mb-2"><img src="https://i.ibb.co/dJmPXPpg/56d73b99-dfea-4ab2-965d-249ec3dd4a2d.png" alt="brand icon" className="inline-block w-8 h-8 mx-2 align-middle" referrerPolicy="no-referrer" /></span>
           <h2 className="text-3xl md:text-4xl font-serif font-bold text-white mb-3">
             Create Your Account
           </h2>

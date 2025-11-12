@@ -22,7 +22,7 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-3">
-            <span className="font-serif text-2xl font-bold tracking-tight"><img src="https://i.ibb.co/bgndCPCv/72818780-d3ba-4367-b620-58e55790f53d.png" alt="coffee icon" className="inline-block w-6 h-6 mx-1 align-middle" referrerPolicy="no-referrer" />coffee</span>
+            <span className="font-serif text-2xl font-bold tracking-tight"><img src="https://i.ibb.co/dJmPXPpg/56d73b99-dfea-4ab2-965d-249ec3dd4a2d.png" alt="brand icon" className="inline-block w-6 h-6 mx-1 align-middle" referrerPolicy="no-referrer" /></span>
           </Link>
 
           {/* Desktop Navigation */}

@@ -126,7 +126,7 @@ const AdminDashboard = () => {
       {/* Sidebar */}
       <aside className={`fixed lg:static inset-y-0 left-0 z-50 w-64 bg-charcoal-800 border-r border-charcoal-700 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'} transition-transform duration-300`}>
         <div className="p-6 border-b border-charcoal-700">
-          <span className="font-serif text-2xl font-bold text-white"><img src="https://i.ibb.co/bgndCPCv/72818780-d3ba-4367-b620-58e55790f53d.png" alt="coffee icon" className="inline-block w-6 h-6 mx-1 align-middle" referrerPolicy="no-referrer" />coffee</span>
+          <span className="font-serif text-2xl font-bold text-white"><img src="https://i.ibb.co/dJmPXPpg/56d73b99-dfea-4ab2-965d-249ec3dd4a2d.png" alt="brand icon" className="inline-block w-6 h-6 mx-1 align-middle" referrerPolicy="no-referrer" /></span>
           <span className="text-white/60 text-sm ml-2">Admin</span>
         </div>
         <nav className="p-4 space-y-2">
