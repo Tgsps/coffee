@@ -77,7 +77,7 @@ const Login = () => {
         className="max-w-md w-full"
       >
         <div className="text-center mb-10">
-          <span className="font-serif text-4xl font-bold text-white block mb-2">21<img src="https://i.ibb.co/bgndCPCv/72818780-d3ba-4367-b620-58e55790f53d.png" alt="coffee icon" className="inline-block w-6 h-6 mx-2 align-middle" />coffee</span>
+          <span className="font-serif text-4xl font-bold text-white block mb-2">21<img src="https://i.ibb.co/bgndCPCv/72818780-d3ba-4367-b620-58e55790f53d.png" alt="coffee icon" className="inline-block w-6 h-6 mx-2 align-middle" referrerPolicy="no-referrer" />coffee</span>
           <h2 className="text-3xl md:text-4xl font-serif font-bold text-white mb-3">
             Welcome Back
           </h2>

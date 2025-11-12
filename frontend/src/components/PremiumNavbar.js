@@ -39,7 +39,7 @@ const PremiumNavbar = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-3">
             <span className="font-serif text-2xl font-bold text-white tracking-tight">
-              21<img src="https://i.ibb.co/bgndCPCv/72818780-d3ba-4367-b620-58e55790f53d.png" alt="coffee icon" className="inline-block w-5 h-5 mx-1 align-middle" />coffee
+              21<img src="https://i.ibb.co/bgndCPCv/72818780-d3ba-4367-b620-58e55790f53d.png" alt="coffee icon" className="inline-block w-5 h-5 mx-1 align-middle" referrerPolicy="no-referrer" />coffee
             </span>
           </Link>
 
