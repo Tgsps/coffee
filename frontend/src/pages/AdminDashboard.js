@@ -126,7 +126,7 @@ const AdminDashboard = () => {
       {/* Sidebar */}
       <aside className={`fixed lg:static inset-y-0 left-0 z-50 w-64 bg-charcoal-800 border-r border-charcoal-700 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'} transition-transform duration-300`}>
         <div className="p-6 border-b border-charcoal-700">
-          <span className="font-serif text-2xl font-bold text-white">21<img src="https://chatgpt.com/backend-api/estuary/content?id=file_000000005f70722f920329d14b0b9d1f&ts=489706&p=fs&cid=1&sig=1e23edf10017fdc6c1828b924490f588f7e2a7cec794a0f694c5c874ed54f854&v=0" alt="coffee icon" className="inline-block w-5 h-5 mx-1 align-middle" />coffee</span>
+          <span className="font-serif text-2xl font-bold text-white">21<img src="https://i.ibb.co/bgndCPCv/72818780-d3ba-4367-b620-58e55790f53d.png" alt="coffee icon" className="inline-block w-5 h-5 mx-1 align-middle" />coffee</span>
           <span className="text-white/60 text-sm ml-2">Admin</span>
         </div>
         <nav className="p-4 space-y-2">
