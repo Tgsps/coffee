@@ -9,7 +9,7 @@ const Footer = () => {
           {/* Company Info */}
           <div className="col-span-1 md:col-span-2">
             <div className="mb-6">
-              <span className="font-serif text-3xl font-bold tracking-tight">ONYX</span>
+              <span className="font-serif text-3xl font-bold tracking-tight">21coffee</span>
             </div>
             <p className="text-white/60 mb-6 max-w-md leading-relaxed">
               Precision roasting, transparent sourcing, exceptional coffee. Craft
@@ -113,7 +113,7 @@ const Footer = () => {
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-charcoal-800 flex flex-col md:flex-row justify-between items-center">
           <p className="text-white/40 text-sm">
-            © {new Date().getFullYear()} ONYX Coffee Lab. All rights reserved.
+            © {new Date().getFullYear()} 21coffee Coffee Lab. All rights reserved.
           </p>
           <div className="flex space-x-6 mt-4 md:mt-0">
             <a

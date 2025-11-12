@@ -77,7 +77,7 @@ const Login = () => {
         className="max-w-md w-full"
       >
         <div className="text-center mb-10">
-          <span className="font-serif text-4xl font-bold text-white block mb-2">ONYX</span>
+          <span className="font-serif text-4xl font-bold text-white block mb-2">21coffee</span>
           <h2 className="text-3xl md:text-4xl font-serif font-bold text-white mb-3">
             Welcome Back
           </h2>

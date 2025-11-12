@@ -39,7 +39,7 @@ const PremiumNavbar = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-3">
             <span className="font-serif text-2xl font-bold text-white tracking-tight">
-              ONYX
+              21coffee
             </span>
           </Link>
 

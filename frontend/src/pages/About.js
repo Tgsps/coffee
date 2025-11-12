@@ -200,7 +200,7 @@ const About = () => {
               Meet Our Team
             </h2>
             <p className="text-xl text-white/60 max-w-2xl mx-auto">
-              The passionate people behind ONYX who make it all possible
+              The passionate people behind 21coffee who make it all possible
             </p>
           </motion.div>
 

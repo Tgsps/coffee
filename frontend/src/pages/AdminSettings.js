@@ -19,7 +19,7 @@ const AdminSettings = () => {
       emailNotifications: true
     },
     system: {
-      siteTitle: 'ONYX Coffee Lab',
+      siteTitle: '21coffee Coffee Lab',
       currency: 'USD',
       timezone: 'America/New_York'
     }
