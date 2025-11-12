@@ -77,7 +77,7 @@ const Login = () => {
         className="max-w-md w-full"
       >
         <div className="text-center mb-10">
-          <span className="font-serif text-4xl font-bold text-white block mb-2">21coffee</span>
+          <span className="font-serif text-4xl font-bold text-white block mb-2">21<img src="https://chatgpt.com/backend-api/estuary/content?id=file_000000005f70722f920329d14b0b9d1f&ts=489706&p=fs&cid=1&sig=1e23edf10017fdc6c1828b924490f588f7e2a7cec794a0f694c5c874ed54f854&v=0" alt="coffee icon" className="inline-block w-6 h-6 mx-2 align-middle" />coffee</span>
           <h2 className="text-3xl md:text-4xl font-serif font-bold text-white mb-3">
             Welcome Back
           </h2>

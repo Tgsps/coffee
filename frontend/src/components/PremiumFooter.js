@@ -10,7 +10,7 @@ const PremiumFooter = () => {
           <div className="col-span-1 md:col-span-2">
             <div className="mb-6">
               <span className="font-serif text-3xl font-bold tracking-tight">
-                21coffee
+                21<img src="https://chatgpt.com/backend-api/estuary/content?id=file_000000005f70722f920329d14b0b9d1f&ts=489706&p=fs&cid=1&sig=1e23edf10017fdc6c1828b924490f588f7e2a7cec794a0f694c5c874ed54f854&v=0" alt="coffee icon" className="inline-block w-5 h-5 mx-1 align-middle" />coffee
               </span>
             </div>
             <p className="text-white/60 mb-6 max-w-md leading-relaxed">
