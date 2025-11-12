@@ -1,7 +1,7 @@
 # Premium Coffee Website Design Guide
 
 ## Overview
-This is a premium one-page website design inspired by Onyx Coffee Lab's refined aesthetic. The design emphasizes dark tones, high contrast, and sophisticated typography with subtle motion effects.
+This is a premium one-page website design inspired by 21coffee Coffee Lab's refined aesthetic. The design emphasizes dark tones, high contrast, and sophisticated typography with subtle motion effects.
 
 ---
 
@@ -80,7 +80,7 @@ This is a premium one-page website design inspired by Onyx Coffee Lab's refined 
 - **Position**: Fixed top
 - **Text Color**: White/90
 - **Hover**: White
-- **Logo**: "ONYX" in serif, 24px (text-2xl)
+- **Logo**: "21coffee" in serif, 24px (text-2xl)
 
 #### Scrolled State
 - **Background**: `charcoal-900/95` with `backdrop-blur-md`
@@ -385,7 +385,7 @@ frontend/src/
 
 ---
 
-**Design Inspiration**: Onyx Coffee Lab  
+**Design Inspiration**: 21coffee Coffee Lab  
 **Implementation**: React + Framer Motion + Tailwind CSS  
 **Last Updated**: 2024
 
