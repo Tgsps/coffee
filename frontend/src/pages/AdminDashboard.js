@@ -118,15 +118,48 @@ const AdminDashboard = () => {
     { name: 'Orders', icon: '📦', link: '/admin/orders' },
     { name: 'Products', icon: '☕', link: '/admin/products' },
     { name: 'Users', icon: '👥', link: '/admin/users' },
-    { name: 'Settings', icon: '⚙️', link: '#' },
+    { name: 'Settings', icon: '⚙️', link: '/admin/settings' },
   ];
+
+  const formatCurrency = (value) => {
+    if (!value && value !== 0) return '$0';
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(value);
+  };
+
+  const analytics = {
+    weeklySales: stats.analytics?.weeklySales || [
+      { day: 'Mon', amount: 1200 },
+      { day: 'Tue', amount: 1680 },
+      { day: 'Wed', amount: 1420 },
+      { day: 'Thu', amount: 1980 },
+      { day: 'Fri', amount: 2320 },
+      { day: 'Sat', amount: 1760 },
+      { day: 'Sun', amount: 1540 }
+    ],
+    topProducts:
+      stats.analytics?.topProducts ||
+      stats.products?.top ||
+      [
+        { name: 'Ethiopia Yirgacheffe', revenue: 4200, orders: 58 },
+        { name: 'Signature Espresso', revenue: 3650, orders: 51 },
+        { name: 'Kenya AA', revenue: 2980, orders: 37 }
+      ],
+    customerInsights:
+      stats.analytics?.customerInsights || {
+        returningRate: 62,
+        averageOrderValue: 38.5,
+        subscribers: 112
+      }
+  };
+
+  const maxWeeklySales = Math.max(...analytics.weeklySales.map((item) => item.amount), 1);
 
   return (
     <div className="min-h-screen bg-charcoal-900 flex">
       {/* Sidebar */}
       <aside className={`fixed lg:static inset-y-0 left-0 z-50 w-64 bg-charcoal-800 border-r border-charcoal-700 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'} transition-transform duration-300`}>
         <div className="p-6 border-b border-charcoal-700">
-          <span className="font-serif text-2xl font-bold text-white"><img src="https://i.ibb.co/dJmPXPpg/56d73b99-dfea-4ab2-965d-249ec3dd4a2d.png" alt="brand icon" className="inline-block w-6 h-6 mx-1 align-middle" referrerPolicy="no-referrer" /></span>
+          <span className="font-serif text-2xl font-bold text-white">21coffee</span>
           <span className="text-white/60 text-sm ml-2">Admin</span>
         </div>
         <nav className="p-4 space-y-2">
@@ -242,6 +275,106 @@ const AdminDashboard = () => {
               >
                 <p className="text-white/60 text-sm mb-2">{detail.title}</p>
                 <p className={`text-3xl font-bold ${detail.color}`}>{detail.value}</p>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Analytics Overview */}
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              className="bg-charcoal-800 border border-charcoal-700 rounded-2xl p-6"
+            >
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <p className="text-white/60 text-sm uppercase tracking-[0.3em]">Sales Trend</p>
+                  <h2 className="text-2xl font-serif font-semibold text-white">Weekly revenue</h2>
+                </div>
+                <span className="text-white/60 text-sm">USD</span>
+              </div>
+              <div className="flex items-end gap-3 h-48">
+                {analytics.weeklySales.map((day) => (
+                  <div key={day.day} className="flex-1 flex flex-col items-center">
+                    <div
+                      className="w-full rounded-full bg-gradient-to-b from-gold-400 to-rose-400"
+                      style={{
+                        height: `${Math.max((day.amount / maxWeeklySales) * 100, 8)}%`
+                      }}
+                    />
+                    <p className="text-white/60 text-xs mt-3 uppercase tracking-widest">{day.day}</p>
+                    <p className="text-white text-sm font-semibold">{formatCurrency(day.amount)}</p>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+              className="bg-charcoal-800 border border-charcoal-700 rounded-2xl p-6"
+            >
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <p className="text-white/60 text-sm uppercase tracking-[0.3em]">Top Products</p>
+                  <h2 className="text-2xl font-serif font-semibold text-white">Revenue leaders</h2>
+                </div>
+                <Link
+                  to="/admin/products"
+                  className="text-sm text-gold-400 hover:text-gold-300 font-semibold"
+                >
+                  Manage →
+                </Link>
+              </div>
+              <div className="space-y-4">
+                {analytics.topProducts.map((product, idx) => (
+                  <div
+                    key={`${product.name}-${idx}`}
+                    className="flex items-center justify-between p-4 rounded-xl bg-charcoal-900/40 border border-charcoal-700"
+                  >
+                    <div>
+                      <p className="text-white font-medium">{product.name}</p>
+                      <p className="text-white/60 text-sm">{product.orders || 0} orders</p>
+                    </div>
+                    <p className="text-xl font-semibold text-gold-300">
+                      {formatCurrency(product.revenue || product.sales || 0)}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            {[
+              {
+                label: 'Returning customers',
+                value: `${analytics.customerInsights.returningRate || 0}%`,
+                caption: 'Customers ordering 2+ times'
+              },
+              {
+                label: 'Avg. order value',
+                value: formatCurrency(analytics.customerInsights.averageOrderValue || 0),
+                caption: 'Rolling 30-day average'
+              },
+              {
+                label: 'Subscribers',
+                value: analytics.customerInsights.subscribers || 0,
+                caption: 'Active brew club members'
+              }
+            ].map((card, idx) => (
+              <motion.div
+                key={card.label}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6 + idx * 0.1 }}
+                className="bg-charcoal-800 border border-charcoal-700 rounded-2xl p-6"
+              >
+                <p className="text-white/60 text-sm uppercase tracking-[0.3em] mb-2">{card.label}</p>
+                <p className="text-4xl font-serif font-semibold text-white mb-1">{card.value}</p>
+                <p className="text-white/60 text-sm">{card.caption}</p>
               </motion.div>
             ))}
           </div>

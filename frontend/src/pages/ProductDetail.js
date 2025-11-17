@@ -5,6 +5,7 @@ import api from '../api/axios';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
+import { useCompare } from '../context/CompareContext';
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -16,6 +17,7 @@ const ProductDetail = () => {
   const [submittingReview, setSubmittingReview] = useState(false);
   const { addToCart } = useCart();
   const { isAuthenticated } = useAuth();
+  const { selectedProducts, toggleProduct, isSelected, maxCompare } = useCompare();
 
   useEffect(() => {
     fetchProduct();
@@ -37,6 +39,20 @@ const ProductDetail = () => {
   const handleAddToCart = () => {
     addToCart(product, quantity);
     toast.success('Added to cart!');
+  };
+
+  const handleCompareAction = () => {
+    const wasSelected = isSelected(product._id);
+    if (!wasSelected && selectedProducts.length >= maxCompare) {
+      toast.info(`You can compare up to ${maxCompare} products.`);
+      return;
+    }
+    toggleProduct(product);
+    toast.success(
+      wasSelected
+        ? 'Removed from comparison'
+        : `Added to compare (${selectedProducts.length + 1}/${maxCompare})`
+    );
   };
 
   const handleSubmitReview = async (e) => {
@@ -209,6 +225,12 @@ const ProductDetail = () => {
                 className="w-full bg-white text-charcoal-900 py-5 rounded-full font-bold text-lg hover:bg-white/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105"
               >
                 {product.inStock ? 'Add to Cart' : 'Out of Stock'}
+              </button>
+              <button
+                onClick={handleCompareAction}
+                className="w-full mt-4 border border-white/20 text-white py-4 rounded-full font-semibold hover:bg-white/10 transition-all"
+              >
+                {isSelected(product._id) ? 'Remove from comparison' : 'Add to comparison'}
               </button>
 
               <div className="flex items-center justify-center gap-8 text-sm text-white/60 pt-4 border-t border-charcoal-700">

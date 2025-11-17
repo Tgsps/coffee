@@ -100,16 +100,22 @@ const PremiumHome = () => {
             >
               <a
                 href="#products"
-                className="inline-block bg-white text-charcoal-900 px-8 py-4 text-lg font-semibold tracking-wide rounded-full hover:bg-white/95 transition-all hover:scale-105"
+                className="inline-block bg-white text-charcoal-900 px-8 py-4 text-lg font-semibold tracking-wide rounded-full hover:bg-white/95 transition-all hover:scale-105 text-center"
               >
                 Explore Coffee
               </a>
               <a
                 href="#story"
-                className="inline-block border-2 border-white/60 text-white px-8 py-4 text-lg font-semibold tracking-wide rounded-full hover:bg-white/10 transition-all hover:border-white"
+                className="inline-block border-2 border-white/60 text-white px-8 py-4 text-lg font-semibold tracking-wide rounded-full hover:bg-white/10 transition-all hover:border-white text-center"
               >
                 Our Story
               </a>
+              <Link
+                to="/guides"
+                className="inline-block bg-white/10 border border-white/20 text-white px-8 py-4 text-lg font-semibold tracking-wide rounded-full hover:bg-white/15 transition-all text-center"
+              >
+                Brew Guides
+              </Link>
             </motion.div>
           </motion.div>
         </div>
@@ -199,7 +205,7 @@ const PremiumHome = () => {
                     className="aspect-square overflow-hidden rounded-2xl col-span-2"
                   >
                     <img
-                      src="https://images.unsplash.com/photo-1501339847302-ac426a4c7c13?q=80&w=800&auto=format&fit=crop"
+                      src="https://scontent.cdninstagram.com/v/t51.75761-15/487837790_18081662314636872_6684052898403725243_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=100&ig_cache_key=MzYwMTIzMDYxNjcwMDY2ODMyNA%3D%3D.3-ccb1-7&ccb=1-7&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjEwMjR4MTI4MC5zZHIuQzMifQ%3D%3D&_nc_ohc=o6NvzWy5JmYQ7kNvwGfqIFs&_nc_oc=AdlcKRDs0dLr2MUSHfMb2HdmOLo5pkmnapbw-DSaMgQJQPduOe9fJLxZS7aF1v15Gtc&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.cdninstagram.com&_nc_gid=n9_fGbsJPZGbAgY7XJYbZQ&oh=00_AfgN7RPRJxNuIXXBJV0nMazEpqSGEs39rTo8OJtBLM6w_Q&oe=691FECD2"
                       alt="Brewing craft"
                       className="w-full h-full object-cover hover:scale-110 transition-transform duration-700"
                     />

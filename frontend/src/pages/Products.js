@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../api/axios';
 import { useCart } from '../context/CartContext';
+import { useCompare } from '../context/CompareContext';
+import { toast } from 'react-toastify';
 
 const Products = () => {
   const [products, setProducts] = useState([]);
@@ -18,6 +20,7 @@ const Products = () => {
     total: 0
   });
   const { addToCart } = useCart();
+  const { selectedProducts, toggleProduct, isSelected, maxCompare, removeProduct, clearProducts } = useCompare();
 
   const categories = [
     { value: '', label: 'All Categories' },
@@ -73,6 +76,14 @@ const Products = () => {
     addToCart(product, 1);
   };
 
+  const handleCompareToggle = (product) => {
+    if (!isSelected(product._id) && selectedProducts.length >= maxCompare) {
+      toast.info(`You can compare up to ${maxCompare} products.`);
+      return;
+    }
+    toggleProduct(product);
+  };
+
   const handlePageChange = (page) => {
     setPagination(prev => ({ ...prev, currentPage: page }));
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -99,7 +110,7 @@ const Products = () => {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: 'easeOut' }}
-          className="text-center mb-12"
+          className="text-center mb-8"
         >
           <h1 className="text-4xl md:text-6xl font-serif font-bold tracking-tight text-white mb-6">
             Our Coffee Collection
@@ -108,6 +119,25 @@ const Products = () => {
             Discover our carefully curated selection of premium coffee, crafted for discerning tastes
           </p>
         </motion.div>
+        <div className="flex flex-col md:flex-row gap-4 justify-center md:justify-between items-center mb-10">
+          <div className="text-white/60 text-sm">
+            Need help choosing? جرّب الاختبار أو قارن حتى ثلاثة منتجات.
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <Link
+              to="/recommendations"
+              className="px-5 py-3 rounded-full border border-white/20 text-white text-sm font-semibold hover:bg-white/10 transition-all"
+            >
+              Take the quiz
+            </Link>
+            <Link
+              to={selectedProducts.length > 0 ? `/compare?ids=${selectedProducts.map((p) => p._id).join(',')}` : '/compare'}
+              className="px-5 py-3 rounded-full bg-white/10 border border-white/20 text-white text-sm font-semibold hover:bg-white/15 transition-all"
+            >
+              Compare products
+            </Link>
+          </div>
+        </div>
 
         {/* Filters */}
         <motion.div
@@ -176,6 +206,56 @@ const Products = () => {
           </div>
         </motion.div>
 
+        {/* Compare Tray */}
+        {selectedProducts.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-charcoal-800 border border-charcoal-700 rounded-2xl p-5 mb-10"
+          >
+            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+              <div>
+                <p className="text-sm text-white/60 uppercase tracking-[0.3em]">Compare Tray</p>
+                <p className="text-white">Selected {selectedProducts.length}/{maxCompare} products</p>
+              </div>
+              <div className="flex flex-wrap gap-3">
+                {selectedProducts.map((product) => (
+                  <div
+                    key={product._id}
+                    className="flex items-center gap-2 px-3 py-2 rounded-full bg-charcoal-900 border border-white/10 text-sm"
+                  >
+                    <span>{product.name}</span>
+                    <button
+                      onClick={() => removeProduct(product._id)}
+                      className="text-white/60 hover:text-white text-xs"
+                    >
+                      A-
+                    </button>
+                  </div>
+                ))}
+              </div>
+              <div className="flex gap-3">
+                <Link
+                  to={`/compare?ids=${selectedProducts.map((p) => p._id).join(',')}`}
+                  className={`px-5 py-2 rounded-full text-sm font-semibold ${
+                    selectedProducts.length >= 2
+                      ? 'bg-white text-charcoal-900 hover:bg-white/90 transition-all'
+                      : 'bg-white/10 text-white/60 cursor-not-allowed'
+                  }`}
+                >
+                  View comparison
+                </Link>
+                <button
+                  onClick={clearProducts}
+                  className="px-5 py-2 rounded-full border border-white/20 text-white/70 hover:text-white text-sm"
+                >
+                  Clear
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
         {/* Products Grid */}
         {loading ? (
           <div className="flex justify-center py-12">
@@ -210,6 +290,20 @@ const Products = () => {
                   >
                     <Link to={`/products/${product._id}`}>
                       <div className="relative aspect-[4/3] overflow-hidden">
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleCompareToggle(product);
+                          }}
+                          className={`absolute top-4 left-4 z-10 px-3 py-1 rounded-full text-xs font-semibold tracking-wide uppercase ${
+                            isSelected(product._id)
+                              ? 'bg-white text-charcoal-900'
+                              : 'bg-white/20 text-white hover:bg-white/30'
+                          }`}
+                        >
+                          {isSelected(product._id) ? 'Selected' : 'Compare'}
+                        </button>
                         <img
                           src={product.image}
                           alt={product.name}

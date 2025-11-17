@@ -22,7 +22,7 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-3">
-            <span className="font-serif text-2xl font-bold tracking-tight"><img src="https://i.ibb.co/dJmPXPpg/56d73b99-dfea-4ab2-965d-249ec3dd4a2d.png" alt="brand icon" className="inline-block w-6 h-6 mx-1 align-middle" referrerPolicy="no-referrer" /></span>
+            <span className="font-serif text-2xl font-bold tracking-tight text-white">21coffee</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -33,8 +33,17 @@ const Navbar = () => {
             <Link to="/products" className="text-white/90 hover:text-white transition-colors text-sm tracking-wide uppercase">
               Products
             </Link>
+            <Link to="/recommendations" className="text-white/90 hover:text-white transition-colors text-sm tracking-wide uppercase">
+              Find Your Coffee
+            </Link>
+            <Link to="/compare" className="text-white/90 hover:text-white transition-colors text-sm tracking-wide uppercase">
+              Compare
+            </Link>
             <Link to="/about" className="text-white/90 hover:text-white transition-colors text-sm tracking-wide uppercase">
               About
+            </Link>
+            <Link to="/guides" className="text-white/90 hover:text-white transition-colors text-sm tracking-wide uppercase">
+              Guides
             </Link>
             <Link to="/contact" className="text-white/90 hover:text-white transition-colors text-sm tracking-wide uppercase">
               Contact
@@ -45,8 +54,25 @@ const Navbar = () => {
           <div className="flex items-center space-x-4">
             {/* Cart */}
             <Link to="/cart" className="relative p-2 text-white/90 hover:text-white transition-colors">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01" />
+              <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.8}
+                  d="M6 9V7.8a6 6 0 1112 0V9"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.8}
+                  d="M5 9h14a1 1 0 011 1v9a3 3 0 01-3 3H7a3 3 0 01-3-3v-9a1 1 0 011-1z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.8}
+                  d="M9 13h6"
+                />
               </svg>
               {getCartItemsCount() > 0 && (
                 <span className="absolute -top-1 -right-1 bg-rose-400 text-charcoal-900 text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
@@ -156,11 +182,32 @@ const Navbar = () => {
                 Products
               </Link>
               <Link
+                to="/recommendations"
+                className="text-white/90 hover:text-white transition-colors text-sm tracking-wide uppercase"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Find Your Coffee
+              </Link>
+              <Link
+                to="/compare"
+                className="text-white/90 hover:text-white transition-colors text-sm tracking-wide uppercase"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Compare
+              </Link>
+              <Link
                 to="/about"
                 className="text-white/90 hover:text-white transition-colors text-sm tracking-wide uppercase"
                 onClick={() => setIsMenuOpen(false)}
               >
                 About
+              </Link>
+              <Link
+                to="/guides"
+                className="text-white/90 hover:text-white transition-colors text-sm tracking-wide uppercase"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Guides
               </Link>
               <Link
                 to="/contact"

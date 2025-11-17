@@ -4,6 +4,8 @@ import { motion } from 'framer-motion';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 
+const FALLBACK_PRODUCT_IMAGE = 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=600&auto=format&fit=crop';
+
 const Orders = () => {
   const { isAuthenticated } = useAuth();
   const [orders, setOrders] = useState([]);
@@ -36,6 +38,16 @@ const Orders = () => {
       hour: '2-digit',
       minute: '2-digit'
     });
+  };
+
+  const getProductInfo = (item) => {
+    if (item?.product && typeof item.product === 'object') {
+      return item.product;
+    }
+    if (item?.productDetails) {
+      return item.productDetails;
+    }
+    return null;
   };
 
   const getStatusBadge = (order) => {
@@ -168,26 +180,34 @@ const Orders = () => {
                       <div>
                         <h4 className="font-medium text-white mb-4">Items</h4>
                         <div className="space-y-3">
-                          {order.orderItems.map((item, index) => (
-                            <div key={index} className="flex items-center space-x-4">
-                              <img
-                                src={item.product.image}
-                                alt={item.product.name}
-                                className="w-16 h-16 object-cover rounded-lg"
-                              />
-                              <div className="flex-1">
+                          {order.orderItems.map((item, index) => {
+                            const productInfo = getProductInfo(item);
+                            const productName = productInfo?.name || 'Coffee product';
+                            const imageSrc = productInfo?.image || FALLBACK_PRODUCT_IMAGE;
+                            const unitPrice = Number(item.price || productInfo?.price || 0);
+
+                            return (
+                              <div key={index} className="flex items-center space-x-4">
+                                <img
+                                  src={imageSrc}
+                                  alt={productName}
+                                  className="w-16 h-16 object-cover rounded-lg border border-charcoal-700"
+                                  loading="lazy"
+                                />
+                                <div className="flex-1">
+                                  <p className="text-sm font-medium text-white">
+                                    {productName}
+                                  </p>
+                                  <p className="text-xs text-white/60">
+                                    Qty: {item.quantity} x ${unitPrice.toFixed(2)}
+                                  </p>
+                                </div>
                                 <p className="text-sm font-medium text-white">
-                                  {item.product.name}
-                                </p>
-                                <p className="text-xs text-white/60">
-                                  Qty: {item.quantity} × ${item.price}
+                                  ${(item.quantity * unitPrice).toFixed(2)}
                                 </p>
                               </div>
-                              <p className="text-sm font-medium text-white">
-                                ${(item.quantity * item.price).toFixed(2)}
-                              </p>
-                            </div>
-                          ))}
+                            );
+                          })}
                         </div>
                       </div>
 
@@ -249,3 +269,5 @@ const Orders = () => {
 };
 
 export default Orders;
+
+

@@ -6,9 +6,9 @@ import 'react-toastify/dist/ReactToastify.css';
 // Context
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
+import { CompareProvider } from './context/CompareContext';
 
 // Components
-import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import PremiumNavbar from './components/PremiumNavbar';
 import PremiumFooter from './components/PremiumFooter';
@@ -30,6 +30,9 @@ import AdminProducts from './pages/AdminProducts';
 import AdminOrders from './pages/AdminOrders';
 import AdminUsers from './pages/AdminUsers';
 import AdminSettings from './pages/AdminSettings';
+import Guides from './pages/Guides';
+import Recommendations from './pages/Recommendations';
+import Compare from './pages/Compare';
 
 // Protected Route Component
 import ProtectedRoute from './components/ProtectedRoute';
@@ -57,7 +60,7 @@ const PremiumLayout = ({ children }) => (
 
 const StandardLayout = ({ children }) => (
   <div className="min-h-screen bg-charcoal-900">
-    <Navbar />
+    <PremiumNavbar />
     <main className="min-h-screen">{children}</main>
     <Footer />
     <ToastContainer
@@ -78,8 +81,9 @@ function App() {
   return (
     <AuthProvider>
       <CartProvider>
-        <Router>
-          <Routes>
+        <CompareProvider>
+          <Router>
+            <Routes>
             {/* Premium home page route */}
             <Route
               path="/"
@@ -127,6 +131,30 @@ function App() {
               element={
                 <StandardLayout>
                   <Contact />
+                </StandardLayout>
+              }
+            />
+            <Route
+              path="/guides"
+              element={
+                <StandardLayout>
+                  <Guides />
+                </StandardLayout>
+              }
+            />
+            <Route
+              path="/recommendations"
+              element={
+                <StandardLayout>
+                  <Recommendations />
+                </StandardLayout>
+              }
+            />
+            <Route
+              path="/compare"
+              element={
+                <StandardLayout>
+                  <Compare />
                 </StandardLayout>
               }
             />
@@ -226,8 +254,9 @@ function App() {
                 </StandardLayout>
               }
             />
-          </Routes>
-        </Router>
+            </Routes>
+          </Router>
+        </CompareProvider>
       </CartProvider>
     </AuthProvider>
   );

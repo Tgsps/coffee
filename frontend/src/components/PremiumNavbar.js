@@ -10,6 +10,15 @@ const PremiumNavbar = () => {
   const { isAuthenticated, user, logout } = useAuth();
   const { getCartItemsCount } = useCart();
   const navigate = useNavigate();
+  const navLinks = [
+    { label: 'Home', to: '/' },
+    { label: 'Products', to: '/products' },
+    { label: 'Find Your Coffee', to: '/recommendations' },
+    { label: 'Compare', to: '/compare' },
+    { label: 'About', to: '/about' },
+    { label: 'Guides', to: '/guides' },
+    { label: 'Contact', to: '/contact' }
+  ];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -39,36 +48,21 @@ const PremiumNavbar = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-3">
             <span className="font-serif text-2xl font-bold text-white tracking-tight">
-              <img src="https://i.ibb.co/dJmPXPpg/56d73b99-dfea-4ab2-965d-249ec3dd4a2d.png" alt="brand icon" className="inline-block w-6 h-6 mx-1 align-middle" referrerPolicy="no-referrer" />
+              21coffee
             </span>
           </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-10">
-            <a
-              href="#story"
-              className="text-white/90 hover:text-white transition-colors text-sm tracking-wide uppercase"
-            >
-              Story
-            </a>
-            <a
-              href="#products"
-              className="text-white/90 hover:text-white transition-colors text-sm tracking-wide uppercase"
-            >
-              Products
-            </a>
-            <a
-              href="#process"
-              className="text-white/90 hover:text-white transition-colors text-sm tracking-wide uppercase"
-            >
-              Process
-            </a>
-            <a
-              href="#shop"
-              className="text-white/90 hover:text-white transition-colors text-sm tracking-wide uppercase"
-            >
-              Shop
-            </a>
+            {navLinks.map((link) => (
+              <Link
+                key={link.label}
+                to={link.to}
+                className="text-white/90 hover:text-white transition-colors text-sm tracking-wide uppercase"
+              >
+                {link.label}
+              </Link>
+            ))}
           </div>
 
           {/* Right side - Cart and Auth */}
@@ -78,17 +72,24 @@ const PremiumNavbar = () => {
               to="/cart"
               className="relative p-2 text-white/90 hover:text-white transition-colors"
             >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
+              <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"
+                  strokeWidth={1.8}
+                  d="M6 9V7.8a6 6 0 1112 0V9"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.8}
+                  d="M5 9h14a1 1 0 011 1v9a3 3 0 01-3 3H7a3 3 0 01-3-3v-9a1 1 0 011-1z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.8}
+                  d="M9 13h6"
                 />
               </svg>
               {getCartItemsCount() > 0 && (
@@ -199,34 +200,16 @@ const PremiumNavbar = () => {
         {isMenuOpen && (
           <div className="md:hidden pb-6">
             <div className="flex flex-col space-y-4 pt-4 border-t border-white/10">
-              <a
-                href="#story"
-                className="text-white/90 hover:text-white transition-colors text-sm tracking-wide uppercase"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Story
-              </a>
-              <a
-                href="#products"
-                className="text-white/90 hover:text-white transition-colors text-sm tracking-wide uppercase"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Products
-              </a>
-              <a
-                href="#process"
-                className="text-white/90 hover:text-white transition-colors text-sm tracking-wide uppercase"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Process
-              </a>
-              <a
-                href="#shop"
-                className="text-white/90 hover:text-white transition-colors text-sm tracking-wide uppercase"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Shop
-              </a>
+              {navLinks.map((link) => (
+                <Link
+                  key={link.label}
+                  to={link.to}
+                  className="text-white/90 hover:text-white transition-colors text-sm tracking-wide uppercase"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {link.label}
+                </Link>
+              ))}
               {!isAuthenticated && (
                 <>
                   <Link

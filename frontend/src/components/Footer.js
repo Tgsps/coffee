@@ -9,7 +9,7 @@ const Footer = () => {
           {/* Company Info */}
           <div className="col-span-1 md:col-span-2">
             <div className="mb-6">
-              <span className="font-serif text-3xl font-bold tracking-tight"><img src="https://i.ibb.co/dJmPXPpg/56d73b99-dfea-4ab2-965d-249ec3dd4a2d.png" alt="brand icon" className="inline-block w-6 h-6 mx-1 align-middle" referrerPolicy="no-referrer" /></span>
+              <span className="font-serif text-3xl font-bold tracking-tight">21coffee</span>
             </div>
             <p className="text-white/60 mb-6 max-w-md leading-relaxed">
               Precision roasting, transparent sourcing, exceptional coffee. Craft
@@ -71,8 +71,23 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
+                <Link to="/recommendations" className="text-white/60 hover:text-white transition-colors">
+                  Find Your Coffee
+                </Link>
+              </li>
+              <li>
+                <Link to="/compare" className="text-white/60 hover:text-white transition-colors">
+                  Compare
+                </Link>
+              </li>
+              <li>
                 <Link to="/about" className="text-white/60 hover:text-white transition-colors">
                   About Us
+                </Link>
+              </li>
+              <li>
+                <Link to="/guides" className="text-white/60 hover:text-white transition-colors">
+                  Guides
                 </Link>
               </li>
               <li>
